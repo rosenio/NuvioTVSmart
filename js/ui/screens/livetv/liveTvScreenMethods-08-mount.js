@@ -41,13 +41,6 @@ export function createLiveTvScreenMethods08() {
           setLegacySidebarExpanded(this.container, false);
         }
 
-        // Focus handled in loadData subscription when channels load
-        // But if channels already loaded (cached), apply focus now (deferred)
-        const state = LiveTvRepository.getUiState();
-        if (state.channels && state.channels.length > 0 && !this._hasFocusedContent) {
-          this._hasFocusedContent = true;
-          requestAnimationFrame(() => this.applyFocus());
-        }
         console.log("[LiveTvScreen] mount() complete");
       } catch (e) {
         console.error("[LiveTvScreen] mount error:", e);

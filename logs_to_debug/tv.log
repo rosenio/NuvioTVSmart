@@ -1,6 +1,6 @@
 wrt:service Failed to load resource: net::ERR_UNKNOWN_URL_SCHEME
 app.bundle.js:1 [DEBUG] Router.navigate called: Object
-app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "home", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3550857)"}
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "home", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3554862)"}
 app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: home
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: home
@@ -17,18 +17,10 @@ app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {�
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: home
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: home
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: home
-app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: home
-app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: home
-app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: home
-app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "home"}currentRoute: "home"normalizedAction: "gotoLiveTv"__proto__: Object
-app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}action: "gotoLiveTv"iconMarkup: "<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>"iconType: "svg"labelKey: "sidebar.live_tv"route: "livetv"viewBox: "0 0 24 24"__proto__: Object
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "home"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}
 app.bundle.js:1 [DEBUG] Navigating to: livetv
-app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3550857)"}options: {}params: {}routeName: "livetv"stack: "Error↵    at Object.navigate (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3540334)↵    at un (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:779795)↵    at Object.onKeyDown (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:1088306)↵    at Object.handleKey (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3550857)"__proto__: Object
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3554862)"}
 app.bundle.js:1 [LiveTvScreen] mount() start
 app.bundle.js:1 [LiveTvScreen] calling loadData()
 app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 0, isLoading: true, error: null, playlists: Array(1)}
@@ -41,21 +33,17 @@ app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: false
-app.bundle.js:1 [LiveTvScreen] applyFocus: no focusables
 app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
 app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 0, isLoading: true, error: null}
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: false
-app.bundle.js:1 [LiveTvScreen] applyFocus: no focusables
-app.bundle.js:1 [DEBUG] sidebar onclick: {action: "gotoLiveTv", currentRoute: "home", nodeIndex: "5"}action: "gotoLiveTv"currentRoute: "home"nodeIndex: "5"__proto__: Object
-app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "home"}currentRoute: "home"normalizedAction: "gotoLiveTv"__proto__: Object
-app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}action: "gotoLiveTv"iconMarkup: "<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>"iconType: "svg"labelKey: "sidebar.live_tv"route: "livetv"viewBox: "0 0 24 24"__proto__: Object
+app.bundle.js:1 [DEBUG] sidebar onclick: {action: "gotoLiveTv", currentRoute: "home", nodeIndex: "5"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "home"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}
 app.bundle.js:1 [DEBUG] Navigating to: livetv
-app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…r/apps/NuvioTV001/res/wgt/app.bundle.js:1:788837)"}options: {}params: {}routeName: "livetv"stack: "Error↵    at Object.navigate (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3540334)↵    at un (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:779795)↵    at HTMLButtonElement.a.onclick (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:788837)"__proto__: Object
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…r/apps/NuvioTV001/res/wgt/app.bundle.js:1:788837)"}
 app.bundle.js:1 [LiveTvScreen] mount() start
 app.bundle.js:1 [LiveTvScreen] calling loadData()
 app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 0, isLoading: true, error: null, playlists: Array(1)}
@@ -68,26 +56,22 @@ app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: false
-app.bundle.js:1 [LiveTvScreen] applyFocus: no focusables
 app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
 app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 0, isLoading: true, error: null}
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: false
-app.bundle.js:1 [LiveTvScreen] applyFocus: no focusables
 app.bundle.js:1 [LiveTvRepository] Limiting channels from 477 to 50
-Bme.e.warn @ app.bundle.js:1
+Hme.e.warn @ app.bundle.js:1
 Pse @ app.bundle.js:1
 async function (async)
 Pse @ app.bundle.js:1
-Rke @ app.bundle.js:1
+Lke @ app.bundle.js:1
 loadData @ app.bundle.js:1
 mount @ app.bundle.js:1
 navigate @ app.bundle.js:1
-un @ app.bundle.js:1
+dn @ app.bundle.js:1
 onKeyDown @ app.bundle.js:1
 handleKey @ app.bundle.js:1
 app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
@@ -98,52 +82,66 @@ app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusables: 154 connected: 154
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusing livetv-channel-card focusable undefined
 app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
 app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusables: 154 connected: 154
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusing livetv-channel-card focusable undefined
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusables: 154 connected: 154
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusing livetv-channel-card focusable undefined
-Boxkidstv.png:1 GET https://upload.wikimedia.org/wikipedia/commons/1/18/Boxkidstv.png 429 ()
+upload.wikimedia.org/wikipedia/commons/1/18/Boxkidstv.png:1 GET https://upload.wikimedia.org/wikipedia/commons/1/18/Boxkidstv.png 429 ()
 Image (async)
 render @ app.bundle.js:1
 async function (async)
 render @ app.bundle.js:1
-unsubscribeRepo.Lt.subscribe @ app.bundle.js:1
-Cke.vB.forEach.e @ app.bundle.js:1
-Cke @ app.bundle.js:1
+unsubscribeRepo.Yt.subscribe @ app.bundle.js:1
+Mke.vB.forEach.e @ app.bundle.js:1
+Mke @ app.bundle.js:1
 Si @ app.bundle.js:1
 Pse @ app.bundle.js:1
 async function (async)
 Pse @ app.bundle.js:1
-Rke @ app.bundle.js:1
+Lke @ app.bundle.js:1
 loadData @ app.bundle.js:1
 mount @ app.bundle.js:1
 navigate @ app.bundle.js:1
-un @ app.bundle.js:1
+dn @ app.bundle.js:1
 onKeyDown @ app.bundle.js:1
 handleKey @ app.bundle.js:1
 app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
-app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "player", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3525042)↵    at <anonymous>"}
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "player", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3525247)↵    at <anonymous>"}
 app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
 app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
-app.bundle.js:1 [LiveTvScreen] focusContentNode called
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: no focusables
+app.bundle.js:1 Unhandled runtime error TypeError: Cannot read property 'querySelectorAll' of null
+    at Object.buildNavModel (app.bundle.js:1)
+    at requestAnimationFrame (app.bundle.js:1)
+Hme.e.warn @ app.bundle.js:1
+window.addEventListener.e @ app.bundle.js:1
+requestAnimationFrame (async)
+closeSidebarToContent @ app.bundle.js:1
+playChannel @ app.bundle.js:1
+async function (async)
+playChannel @ app.bundle.js:1
+t.onclick @ app.bundle.js:1
+onKeyDown @ app.bundle.js:1
+handleKey @ app.bundle.js:1
+app.bundle.js:1 Uncaught TypeError: Cannot read property 'querySelectorAll' of null
+    at Object.buildNavModel (app.bundle.js:1)
+    at requestAnimationFrame (app.bundle.js:1)
+buildNavModel @ app.bundle.js:1
+requestAnimationFrame @ app.bundle.js:1
+requestAnimationFrame (async)
+closeSidebarToContent @ app.bundle.js:1
+playChannel @ app.bundle.js:1
+async function (async)
+playChannel @ app.bundle.js:1
+t.onclick @ app.bundle.js:1
+onKeyDown @ app.bundle.js:1
+handleKey @ app.bundle.js:1
 app.bundle.js:1 Unhandled promise rejection TypeError: Cannot set property 'innerHTML' of null
     at Object.render (app.bundle.js:1)
     at <anonymous>
-Bme.e.warn @ app.bundle.js:1
+Hme.e.warn @ app.bundle.js:1
 window.addEventListener.e @ app.bundle.js:1
 app.bundle.js:1 Uncaught (in promise) TypeError: Cannot set property 'innerHTML' of null
     at Object.render (app.bundle.js:1)
@@ -151,21 +149,21 @@ app.bundle.js:1 Uncaught (in promise) TypeError: Cannot set property 'innerHTML'
 render @ app.bundle.js:1
 async function (async)
 render @ app.bundle.js:1
-unsubscribeRepo.Lt.subscribe @ app.bundle.js:1
-Cke.vB.forEach.e @ app.bundle.js:1
-Cke @ app.bundle.js:1
+unsubscribeRepo.Yt.subscribe @ app.bundle.js:1
+Mke.vB.forEach.e @ app.bundle.js:1
+Mke @ app.bundle.js:1
 Si @ app.bundle.js:1
-Kke @ app.bundle.js:1
+qke @ app.bundle.js:1
 playChannel @ app.bundle.js:1
 async function (async)
 playChannel @ app.bundle.js:1
 t.onclick @ app.bundle.js:1
 onKeyDown @ app.bundle.js:1
 handleKey @ app.bundle.js:1
-VM48:1 avplay_api.js adding listener for ID: [1]
-VM48:1 avplay_api.js adding listener for ID: [2]
-app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "detail", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3550766)"}options: {skipStackPush: true, replaceHistory: true, isBackNavigation: true}params: {itemId: "live:126ed187:33", itemType: "livetv", fallbackTitle: "Blitstv", imdbId: null, tmdbId: null, …}routeName: "detail"stack: "Error↵    at Object.navigate (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3540334)↵    at Object.navigateBackToStreamScreen (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:1740782)↵    at Object.consumeBackRequest (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:2152992)↵    at Object.handleBack (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3549998)↵    at Object.handleKey (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3550766)"__proto__: Object
-app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3536723)↵    at <anonymous>"}options: {fromHistory: true, skipStackPush: true, isBackNavigation: true}params: {}routeName: "livetv"stack: "Error↵    at Object.navigate (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3540334)↵    at popstateBound.window.addEventListener (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3536723)↵    at <anonymous>"__proto__: Object
+VM44:1 avplay_api.js adding listener for ID: [1]
+VM44:1 avplay_api.js adding listener for ID: [2]
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "detail", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3554771)"}
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3540728)↵    at <anonymous>"}
 app.bundle.js:1 [LiveTvScreen] mount() start
 app.bundle.js:1 [LiveTvScreen] calling loadData()
 app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
@@ -178,34 +176,125 @@ app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusables: 156 connected: 156
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusing livetv-channel-card focusable undefined
 app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
 app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
 app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
 app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusables: 156 connected: 156
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusing livetv-channel-card focusable undefined
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusables: 156 connected: 156
-app.bundle.js:1 [LiveTvScreen] applyFocus: focusing livetv-channel-card focusable undefined
+app.bundle.js:1 [DEBUG] sidebar onclick: {action: "gotoLiveTv", currentRoute: "livetv", nodeIndex: "5"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "livetv"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}
+app.bundle.js:1 [DEBUG] Same route, onSidebarReselect
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3540728)↵    at <anonymous>"}
+app.bundle.js:1 [LiveTvScreen] mount() start
+app.bundle.js:1 [LiveTvScreen] calling loadData()
 app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
-app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "player", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3525042)↵    at <anonymous>"}options: {}params: {streamUrl: "https://5b01a3d32b65c.streamlock.net:1936/tvalpha/tvalpha/playlist.m3u8", itemId: "live:61d89e9d:10", itemType: "livetv", imdbId: null, tmdbId: null, …}routeName: "player"stack: "Error↵    at Object.navigate (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3540334)↵    at Object.playChannel (file:///opt/usr/apps/NuvioTV001/res/wgt/app.bundle.js:1:3525042)↵    at <anonymous>"__proto__: Object
+app.bundle.js:1 [LiveTvScreen] loadData() done
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] mount() complete
 app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
 app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
 app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
-VM48:1 avplay_api.js adding listener for ID: [3]
-app.bundle.js:1 [LiveTvScreen] focusContentNode called
-app.bundle.js:1 [LiveTvScreen] applyFocus called, focusZone: content hasFocusedContent: true
-app.bundle.js:1 [LiveTvScreen] applyFocus: no focusables
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] sidebar onclick: {action: "gotoLiveTv", currentRoute: "livetv", nodeIndex: "5"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "livetv"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}
+app.bundle.js:1 [DEBUG] Same route, onSidebarReselect
+app.bundle.js:1 [DEBUG] sidebar onclick: {action: "gotoLiveTv", currentRoute: "livetv", nodeIndex: "5"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "livetv"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}
+app.bundle.js:1 [DEBUG] Same route, onSidebarReselect
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "home", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3540728)↵    at <anonymous>"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "home"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}
+app.bundle.js:1 [DEBUG] Navigating to: livetv
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3554862)"}
+app.bundle.js:1 [LiveTvScreen] mount() start
+app.bundle.js:1 [LiveTvScreen] calling loadData()
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] loadData() done
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] mount() complete
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] sidebar onclick: {action: "gotoLiveTv", currentRoute: "home", nodeIndex: "5"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction: {normalizedAction: "gotoLiveTv", currentRoute: "home"}
+app.bundle.js:1 [DEBUG] activateLegacySidebarAction target: {action: "gotoLiveTv", route: "livetv", labelKey: "sidebar.live_tv", iconType: "svg", viewBox: "0 0 24 24", …}
+app.bundle.js:1 [DEBUG] Navigating to: livetv
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…r/apps/NuvioTV001/res/wgt/app.bundle.js:1:788837)"}
+app.bundle.js:1 [LiveTvScreen] mount() start
+app.bundle.js:1 [LiveTvScreen] calling loadData()
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] loadData() done
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] mount() complete
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "player", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3525247)↵    at <anonymous>"}
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+VM44:1 avplay_api.js adding listener for ID: [3]
+app.bundle.js:1 Unhandled runtime error TypeError: Cannot read property 'querySelectorAll' of null
+    at Object.buildNavModel (app.bundle.js:1)
+    at requestAnimationFrame (app.bundle.js:1)
+Hme.e.warn @ app.bundle.js:1
+window.addEventListener.e @ app.bundle.js:1
+requestAnimationFrame (async)
+closeSidebarToContent @ app.bundle.js:1
+playChannel @ app.bundle.js:1
+async function (async)
+playChannel @ app.bundle.js:1
+t.onclick @ app.bundle.js:1
+onKeyDown @ app.bundle.js:1
+handleKey @ app.bundle.js:1
+app.bundle.js:1 Uncaught TypeError: Cannot read property 'querySelectorAll' of null
+    at Object.buildNavModel (app.bundle.js:1)
+    at requestAnimationFrame (app.bundle.js:1)
+buildNavModel @ app.bundle.js:1
+requestAnimationFrame @ app.bundle.js:1
+requestAnimationFrame (async)
+closeSidebarToContent @ app.bundle.js:1
+playChannel @ app.bundle.js:1
+async function (async)
+playChannel @ app.bundle.js:1
+t.onclick @ app.bundle.js:1
+onKeyDown @ app.bundle.js:1
+handleKey @ app.bundle.js:1
 app.bundle.js:1 Unhandled promise rejection TypeError: Cannot set property 'innerHTML' of null
     at Object.render (app.bundle.js:1)
     at <anonymous>
-Bme.e.warn @ app.bundle.js:1
+Hme.e.warn @ app.bundle.js:1
 window.addEventListener.e @ app.bundle.js:1
 app.bundle.js:1 Uncaught (in promise) TypeError: Cannot set property 'innerHTML' of null
     at Object.render (app.bundle.js:1)
@@ -213,118 +302,110 @@ app.bundle.js:1 Uncaught (in promise) TypeError: Cannot set property 'innerHTML'
 render @ app.bundle.js:1
 async function (async)
 render @ app.bundle.js:1
-unsubscribeRepo.Lt.subscribe @ app.bundle.js:1
-Cke.vB.forEach.e @ app.bundle.js:1
-Cke @ app.bundle.js:1
+unsubscribeRepo.Yt.subscribe @ app.bundle.js:1
+Mke.vB.forEach.e @ app.bundle.js:1
+Mke @ app.bundle.js:1
 Si @ app.bundle.js:1
-Kke @ app.bundle.js:1
+qke @ app.bundle.js:1
 playChannel @ app.bundle.js:1
 async function (async)
 playChannel @ app.bundle.js:1
 t.onclick @ app.bundle.js:1
 onKeyDown @ app.bundle.js:1
 handleKey @ app.bundle.js:1
-core-js.bundle.js:1 GET https://api.themoviedb.org/3/movie/10/external_ids?api_key=01926d2187b6a5d861eefc750e9df3e3 404 ()
-fetch @ core-js.bundle.js:1
-Aa.u @ app.bundle.js:1
-Aa @ app.bundle.js:1
-n @ app.bundle.js:1
-tmdbToImdb @ app.bundle.js:1
-getMovieSkipIntervals @ app.bundle.js:1
-fetchSkipIntervals @ app.bundle.js:1
-mount @ app.bundle.js:1
-navigate @ app.bundle.js:1
+VM44:1 avplay_api.js adding listener for ID: [4]
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "detail", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3554771)"}
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3540728)↵    at <anonymous>"}
+app.bundle.js:1 [LiveTvScreen] mount() start
+app.bundle.js:1 [LiveTvScreen] calling loadData()
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] loadData() done
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] mount() complete
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "player", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3525247)↵    at <anonymous>"}
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+VM44:1 avplay_api.js adding listener for ID: [5]
+app.bundle.js:1 Unhandled runtime error TypeError: Cannot read property 'querySelectorAll' of null
+    at Object.buildNavModel (app.bundle.js:1)
+    at requestAnimationFrame (app.bundle.js:1)
+Hme.e.warn @ app.bundle.js:1
+window.addEventListener.e @ app.bundle.js:1
+requestAnimationFrame (async)
+closeSidebarToContent @ app.bundle.js:1
 playChannel @ app.bundle.js:1
 async function (async)
 playChannel @ app.bundle.js:1
 t.onclick @ app.bundle.js:1
 onKeyDown @ app.bundle.js:1
 handleKey @ app.bundle.js:1
-core-js.bundle.js:1 GET https://5b01a3d32b65c.streamlock.net:1936/tvalpha/tvalpha/playlist.m3u8 net::ERR_TIMED_OUT
-fetch @ core-js.bundle.js:1
-E @ app.bundle.js:1
-loadManifestTrackDataForCurrentStream @ app.bundle.js:1
-mount @ app.bundle.js:1
-navigate @ app.bundle.js:1
+app.bundle.js:1 Uncaught TypeError: Cannot read property 'querySelectorAll' of null
+    at Object.buildNavModel (app.bundle.js:1)
+    at requestAnimationFrame (app.bundle.js:1)
+buildNavModel @ app.bundle.js:1
+requestAnimationFrame @ app.bundle.js:1
+requestAnimationFrame (async)
+closeSidebarToContent @ app.bundle.js:1
 playChannel @ app.bundle.js:1
 async function (async)
 playChannel @ app.bundle.js:1
 t.onclick @ app.bundle.js:1
 onKeyDown @ app.bundle.js:1
 handleKey @ app.bundle.js:1
-hls.min.js:3 GET https://5b01a3d32b65c.streamlock.net:1936/tvalpha/tvalpha/playlist.m3u8 net::ERR_TIMED_OUT
-r.openAndSendXhr @ hls.min.js:3
-(anonymous) @ hls.min.js:3
-Promise resolved (async)
-r.loadInternal @ hls.min.js:3
-(anonymous) @ hls.min.js:3
-setTimeout (async)
-t.retry @ hls.min.js:3
-t.loadtimeout @ hls.min.js:3
-setTimeout (async)
-r.openAndSendXhr @ hls.min.js:3
-(anonymous) @ hls.min.js:3
-Promise resolved (async)
-r.loadInternal @ hls.min.js:3
-t.load @ hls.min.js:3
-t.load @ hls.min.js:3
-t.onManifestLoading @ hls.min.js:3
-o.emit @ hls.min.js:3
-t.emit @ hls.min.js:3
-t.trigger @ hls.min.js:3
-t.loadSource @ hls.min.js:3
-u.on @ app.bundle.js:1
-o.emit @ hls.min.js:3
-t.emit @ hls.min.js:3
-t.trigger @ hls.min.js:3
-i._onMediaSourceOpen @ hls.min.js:3
-app.bundle.js:1 [Nuvio playback] hls.js error {fatal: true, type: "networkError", details: "manifestLoadError", reason: "", error: "A network error (status 0) occurred while loading manifest", …}
-Bme.e.warn @ app.bundle.js:1
-captureHlsErrorDiagnostic @ app.bundle.js:1
-u.on @ app.bundle.js:1
-o.emit @ hls.min.js:3
-t.emit @ hls.min.js:3
-t.trigger @ hls.min.js:3
-t.handleNetworkError @ hls.min.js:3
-onError @ hls.min.js:3
-r.readystatechange @ hls.min.js:3
-XMLHttpRequest.send (async)
-r.openAndSendXhr @ hls.min.js:3
-(anonymous) @ hls.min.js:3
-Promise resolved (async)
-r.loadInternal @ hls.min.js:3
-(anonymous) @ hls.min.js:3
-setTimeout (async)
-t.retry @ hls.min.js:3
-t.loadtimeout @ hls.min.js:3
-setTimeout (async)
-r.openAndSendXhr @ hls.min.js:3
-(anonymous) @ hls.min.js:3
-Promise resolved (async)
-r.loadInternal @ hls.min.js:3
-t.load @ hls.min.js:3
-t.load @ hls.min.js:3
-t.onManifestLoading @ hls.min.js:3
-o.emit @ hls.min.js:3
-t.emit @ hls.min.js:3
-t.trigger @ hls.min.js:3
-t.loadSource @ hls.min.js:3
-u.on @ app.bundle.js:1
-o.emit @ hls.min.js:3
-t.emit @ hls.min.js:3
-t.trigger @ hls.min.js:3
-i._onMediaSourceOpen @ hls.min.js:3
-core-js.bundle.js:1 GET https://5b01a3d32b65c.streamlock.net:1936/tvalpha/tvalpha/playlist.m3u8 net::ERR_TIMED_OUT
-fetch @ core-js.bundle.js:1
-E @ app.bundle.js:1
-loadManifestTrackDataForCurrentStream @ app.bundle.js:1
+app.bundle.js:1 Unhandled promise rejection TypeError: Cannot set property 'innerHTML' of null
+    at Object.render (app.bundle.js:1)
+    at <anonymous>
+Hme.e.warn @ app.bundle.js:1
+window.addEventListener.e @ app.bundle.js:1
+app.bundle.js:1 Uncaught (in promise) TypeError: Cannot set property 'innerHTML' of null
+    at Object.render (app.bundle.js:1)
+    at <anonymous>
+render @ app.bundle.js:1
 async function (async)
-loadManifestTrackDataForCurrentStream @ app.bundle.js:1
-mount @ app.bundle.js:1
-navigate @ app.bundle.js:1
+render @ app.bundle.js:1
+unsubscribeRepo.Yt.subscribe @ app.bundle.js:1
+Mke.vB.forEach.e @ app.bundle.js:1
+Mke @ app.bundle.js:1
+Si @ app.bundle.js:1
+qke @ app.bundle.js:1
 playChannel @ app.bundle.js:1
 async function (async)
 playChannel @ app.bundle.js:1
 t.onclick @ app.bundle.js:1
 onKeyDown @ app.bundle.js:1
 handleKey @ app.bundle.js:1
+VM44:1 avplay_api.js adding listener for ID: [6]
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "detail", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…/apps/NuvioTV001/res/wgt/app.bundle.js:1:3554771)"}
+app.bundle.js:1 [DEBUG] Router.navigate called: {routeName: "livetv", params: {…}, options: {…}, stack: "Error↵    at Object.navigate (file:///opt/usr/apps…s/wgt/app.bundle.js:1:3540728)↵    at <anonymous>"}
+app.bundle.js:1 [LiveTvScreen] mount() start
+app.bundle.js:1 [LiveTvScreen] calling loadData()
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] loadData() done
+app.bundle.js:1 [LiveTvScreen] render state: {hasPlaylist: true, channels: 50, isLoading: false, error: null, playlists: Array(1)}
+app.bundle.js:1 [LiveTvScreen] mount() complete
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar items: (5) [{…}, {…}, {…}, {…}, {…}]
+app.bundle.js:1 [DEBUG] renderLegacySidebar selectedRoute: livetv
+app.bundle.js:1 [LiveTvScreen] renderContent state: {hasPlaylist: true, channels: 50, isLoading: false, error: null}
+app.bundle.js:1 [LiveTvScreen] Binding sidebar events with currentRoute=livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents currentRoute: livetv
+app.bundle.js:1 [DEBUG] bindRootSidebarEvents focusables: (6) [{…}, {…}, {…}, {…}, {…}, {…}]

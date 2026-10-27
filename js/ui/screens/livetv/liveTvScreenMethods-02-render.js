@@ -68,16 +68,21 @@ export function createLiveTvScreenMethods02() {
       // Bind channel cards
       this.bindChannelCards();
 
-      // Restore focus
-      this.applyFocus();
+      // Build navigation model after DOM is ready
+      this.buildNavModel();
+
+      // Restore focus using new navigation system
+      if (this.navModel?.rows?.[0]?.[0]) {
+        this.focusNode(null, this.navModel.rows[0][0]);
+      }
     },
 
     renderContent(state) {
-      console.log("[LiveTvScreen] renderContent state:", { 
-        hasPlaylist: state.hasPlaylist, 
-        channels: state.channels?.length, 
-        isLoading: state.isLoading, 
-        error: state.errorMessage 
+      console.log("[LiveTvScreen] renderContent state:", {
+        hasPlaylist: state.hasPlaylist,
+        channels: state.channels?.length,
+        isLoading: state.isLoading,
+        error: state.errorMessage
       });
       if (state.isLoading && state.channels.length === 0) {
         return renderLoadingIndicator({ size: "large", label: I18n.t("live_tv_loading", {}, "Loading channels...") });
@@ -421,7 +426,10 @@ export function createLiveTvScreenMethods02() {
       // Settings button
       this.container.querySelectorAll('[data-action="gotoSettings"]').forEach((btn) => {
         btn.onclick = (e) => {
-          console.log("[DEBUG] Content gotoSettings onclick:", { isConnected: btn.isConnected, inContainer: this.container?.contains(btn) });
+          console.log("[DEBUG] Content gotoSettings onclick:", {
+            isConnected: btn.isConnected,
+            inContainer: this.container?.contains(btn)
+          });
           Router.navigate("settings");
         };
       });
@@ -430,6 +438,12 @@ export function createLiveTvScreenMethods02() {
     async playChannel(channel) {
       const preparedChannel = await LiveTvRepository.prepareForPlayback(channel);
       LiveTvRepository.markChannelWatched(preparedChannel);
+
+      // Unsubscribe from repo BEFORE navigation to prevent callbacks after unmount
+      if (this.unsubscribeRepo) {
+        this.unsubscribeRepo();
+        this.unsubscribeRepo = null;
+      }
 
       // Close sidebar before navigating to player
       this.closeSidebarToContent();

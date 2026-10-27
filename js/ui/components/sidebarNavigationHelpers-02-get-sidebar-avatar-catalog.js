@@ -94,7 +94,10 @@ export function isSelectedSidebarAction(action, selectedRoute = "") {
 
 export function renderLegacySidebar({ selectedRoute = "home", profile = null, layout = {}, expanded = false } = {}) {
   const items = sidebarItems(layout);
-  console.log("[DEBUG] renderLegacySidebar items:", items.map(i => ({ action: i.action, route: i.route, labelKey: i.labelKey })));
+  console.log(
+    "[DEBUG] renderLegacySidebar items:",
+    items.map((i) => ({ action: i.action, route: i.route, labelKey: i.labelKey }))
+  );
   console.log("[DEBUG] renderLegacySidebar selectedRoute:", selectedRoute);
   const selectedItem = getSelectedItem(selectedRoute);
   const profileState = profile || {};

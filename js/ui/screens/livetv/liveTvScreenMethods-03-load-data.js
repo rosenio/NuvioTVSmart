@@ -14,12 +14,7 @@ export function createLiveTvScreenMethods03() {
         if (this.isMounted && this.container && this.container.isConnected) {
           const state = LiveTvRepository.getUiState();
           this.render();
-          
-          // Focus content when channels first appear - defer to next frame for DOM update
-          if (!this._hasFocusedContent && state.channels && state.channels.length > 0) {
-            this._hasFocusedContent = true;
-            requestAnimationFrame(() => this.applyFocus());
-          }
+          // render() now handles building nav model and focusing first channel card
         }
       });
     }

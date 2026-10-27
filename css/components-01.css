@@ -448,3 +448,39 @@ button:focus-visible {
   align-items: center;
   width: 100%;
 }
+
+.livetv-channel-card.focused,
+.livetv-channel-card:focus,
+.livetv-channel-card:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--focus-color, #00d4aa), 0 4px 12px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.01);
+  z-index: 1;
+}
+
+.livetv-recent-channel.focused,
+.livetv-recent-channel:focus,
+.livetv-recent-channel:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--focus-color, #00d4aa), 0 4px 12px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.01);
+  z-index: 1;
+}
+
+.livetv-filter-chip.focused,
+.livetv-filter-chip:focus,
+.livetv-filter-chip:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--focus-color, #00d4aa);
+  background: var(--focus-color, #00d4aa);
+  color: #000;
+}
+
+.livetv-search-input:focus,
+.livetv-search-input:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--focus-color, #00d4aa);
+  border-color: var(--focus-color, #00d4aa);
+}

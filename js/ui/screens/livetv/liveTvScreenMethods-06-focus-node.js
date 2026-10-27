@@ -37,8 +37,8 @@ export function createLiveTvScreenMethods06() {
       }
       // Content focus: exclude sidebar elements, prioritize channel cards
       const contentRoot = this.container.querySelector(".livetv-content") || this.container;
-      const channelCards = Array.from(contentRoot.querySelectorAll('.livetv-channel-card'));
-      const recentChannels = Array.from(contentRoot.querySelectorAll('.livetv-recent-channel'));
+      const channelCards = Array.from(contentRoot.querySelectorAll(".livetv-channel-card"));
+      const recentChannels = Array.from(contentRoot.querySelectorAll(".livetv-recent-channel"));
       const otherFocusables = Array.from(
         contentRoot.querySelectorAll(
           '.livetv-favorite-btn, .livetv-play-btn, .livetv-recent-play, .livetv-filter-chip, .livetv-search-input, [data-action="refresh"]:not(.home-nav-item), [data-action="gotoSettings"]:not(.home-nav-item)'

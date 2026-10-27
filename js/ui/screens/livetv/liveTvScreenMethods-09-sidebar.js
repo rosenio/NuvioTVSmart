@@ -32,12 +32,13 @@ export function createLiveTvScreenMethods09() {
       } else {
         setLegacySidebarExpanded(this.container, false);
       }
-      // Focus handled in loadData subscription when channels load
-      // But if channels already exist (cached), focus now
-      const state = LiveTvRepository.getUiState();
-      if (state.channels && state.channels.length > 0) {
-        requestAnimationFrame(() => this.focusContentNode());
-      }
+      // Use new navigation system to focus first channel card
+      requestAnimationFrame(() => {
+        this.buildNavModel();
+        if (this.navModel?.rows?.[0]?.[0]) {
+          this.focusNode(null, this.navModel.rows[0][0]);
+        }
+      });
     },
 
     openSidebar() {
@@ -47,7 +48,13 @@ export function createLiveTvScreenMethods09() {
       } else {
         setLegacySidebarExpanded(this.container, true);
       }
-      this.focusSidebarNode();
+      // Use new navigation system to focus first sidebar item
+      requestAnimationFrame(() => {
+        this.buildNavModel();
+        if (this.navModel?.sidebar?.[0]) {
+          this.focusNode(null, this.navModel.sidebar[0]);
+        }
+      });
     }
   };
 }

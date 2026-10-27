@@ -39,7 +39,10 @@ export function renderRootSidebar({ selectedRoute = "home", profile = null, layo
 export function bindRootSidebarEvents(container, { currentRoute = "", onExpandSidebar = null, onSelectedAction = null } = {}) {
   const focusables = Array.from(container?.querySelectorAll(".home-sidebar .focusable, .modern-sidebar-panel .focusable") || []);
   console.log("[DEBUG] bindRootSidebarEvents currentRoute:", currentRoute);
-  console.log("[DEBUG] bindRootSidebarEvents focusables:", focusables.map(n => ({ action: n.dataset.action, index: n.dataset.navIndex, route: n.dataset.route })));
+  console.log(
+    "[DEBUG] bindRootSidebarEvents focusables:",
+    focusables.map((n) => ({ action: n.dataset.action, index: n.dataset.navIndex, route: n.dataset.route }))
+  );
 
   const moveSidebarFocus = (currentNode, delta) => {
     const nodes = focusables.filter((node) => node.isConnected);
