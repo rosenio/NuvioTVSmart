@@ -16,6 +16,7 @@
 
 Nuvio TV supports **Samsung Tizen TVs from 2018 onward (Tizen 4+)** and **LG webOS TVs from 2020 onward (webOS 5+)**.
 The startup compatibility baseline is Samsung Tizen 4.0 / Chromium 56 and LG webOS 5.0 / Chromium 68 when the platform reports those versions.
+It's a fork to implement iptvlive feature
 
 Platform capabilities are intentionally version-dependent:
 
