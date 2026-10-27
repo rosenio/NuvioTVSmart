@@ -13,8 +13,8 @@ import { renderLoadingIndicator } from "../../components/loadingIndicator.js";
 export function createLiveTvScreenMethods02() {
   return {
     async render() {
-      if (!this.container) {
-        console.warn("[LiveTvScreen] render() skipped: no container");
+      if (!this.container || !this.isMounted || !this.container.isConnected) {
+        console.warn("[LiveTvScreen] render() skipped: no container or not mounted");
         return;
       }
       const state = LiveTvRepository.getUiState();
@@ -420,18 +420,55 @@ export function createLiveTvScreenMethods02() {
       const preparedChannel = await LiveTvRepository.prepareForPlayback(channel);
       LiveTvRepository.markChannelWatched(preparedChannel);
 
-      // Navigate to player screen with channel data
+      // Navigate to player screen with channel data (matching stream screen format)
       Router.navigate("player", {
-        item: {
-          id: preparedChannel.id,
-          name: preparedChannel.name,
-          type: "livetv",
-          streamUrl: preparedChannel.streamUrl,
-          headers: preparedChannel.headers,
-          streamType: preparedChannel.streamType,
-          logoUrl: preparedChannel.logoUrl,
-          isLive: true
-        }
+        streamUrl: preparedChannel.streamUrl,
+        itemId: preparedChannel.id,
+        itemType: "livetv",
+        imdbId: null,
+        tmdbId: null,
+        traktId: null,
+        contentLanguage: null,
+        videoId: null,
+        resumePositionMs: 0,
+        resumeProgressPercent: null,
+        resumeDurationMs: 0,
+        startFromBeginning: true,
+        playerTitle: preparedChannel.name,
+        playerSubtitle: "",
+        playerEpisodeTitle: "",
+        playerReleaseYear: "",
+        playerBackdropUrl: null,
+        playerLogoUrl: preparedChannel.logoUrl,
+        parentalWarnings: null,
+        parentalGuide: null,
+        season: null,
+        episode: null,
+        episodes: [],
+        streamCandidates: [
+          {
+            id: "livetv-" + preparedChannel.id,
+            url: preparedChannel.streamUrl,
+            title: preparedChannel.name,
+            addonName: "Live TV",
+            isSynthetic: true,
+            headers: preparedChannel.headers,
+            streamType: preparedChannel.streamType
+          }
+        ],
+        preferredStreamId: "livetv-" + preparedChannel.id,
+        playbackSourceContext: {
+          addonId: "livetv",
+          addonBaseUrl: "",
+          addonName: "Live TV",
+          addonOrderIndex: 0,
+          sourceProviderId: "livetv",
+          sourceIds: [],
+          selectedStreamId: "livetv-" + preparedChannel.id
+        },
+        returnToStreamOnBack: false,
+        streamRouteParams: null,
+        fromDetailRoute: false
       });
     }
   };

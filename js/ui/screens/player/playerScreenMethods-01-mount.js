@@ -1,5 +1,6 @@
 import { loadPlayerShuffleWatched } from "./playerEpisodeShuffle.js";
 import { activeStreamLinkProfile } from "../../../data/local/streamLinkCacheStore.js";
+import { ScreenUtils } from "../../navigation/screen.js";
 /* global __NUVIO_APP_VERSION__ */
 import * as internals from "./playerScreenContext.js";
 import { initializePlayerMountState } from "./playerMountStateInitialization.js";
@@ -38,7 +39,11 @@ export function createPlayerScreenMethods01() {
     async mount(params = {}, navigationContext = {}) {
       streamRepository.setLocalPluginSearchPaused(false);
       this.container = document.getElementById("player");
-      this.container.style.display = "block";
+      if (!this.container) {
+        console.error("[PlayerScreen] No container found!");
+        return;
+      }
+      ScreenUtils.show(this.container);
       this.container.classList.toggle("player-platform-webos", Environment.isWebOS());
       const mountToken = Number(this.playerMountToken || 0) + 1;
       this.playerMountToken = mountToken;

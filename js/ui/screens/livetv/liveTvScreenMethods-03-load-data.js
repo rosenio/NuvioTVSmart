@@ -13,7 +13,9 @@ export function createLiveTvScreenMethods03() {
       });
 
       // Initial render
-      this.render();
+      if (this.isMounted && this.container && this.container.isConnected) {
+        this.render();
+      }
     }
   };
 }
