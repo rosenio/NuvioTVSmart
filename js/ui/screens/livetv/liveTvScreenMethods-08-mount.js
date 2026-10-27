@@ -14,15 +14,6 @@ export function createLiveTvScreenMethods08() {
         }
         ScreenUtils.show(this.container);
 
-        // Ensure sidebar is collapsed on mount
-        const isModern = LocalStore.get("modernSidebar", false);
-        if (isModern) {
-          setModernSidebarExpanded(false);
-          setModernSidebarPillIconOnly(false);
-        } else {
-          setLegacySidebarExpanded(false);
-        }
-
         this.focusZone = "content";
         this.sidebarFocusIndex = 0;
         this.searchQuery = "";
@@ -35,6 +26,16 @@ export function createLiveTvScreenMethods08() {
 
         console.log("[LiveTvScreen] calling render()");
         this.render();
+
+        // Ensure sidebar is collapsed on mount (after render so elements exist)
+        const isModern = LocalStore.get("modernSidebar", false);
+        if (isModern) {
+          setModernSidebarExpanded(this.container, false);
+          setModernSidebarPillIconOnly(this.container, false);
+        } else {
+          setLegacySidebarExpanded(this.container, false);
+        }
+
         console.log("[LiveTvScreen] calling loadData()");
         await this.loadData();
         console.log("[LiveTvScreen] loadData() done");

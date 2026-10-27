@@ -4,6 +4,7 @@ import {
   setLegacySidebarExpanded,
   activateLegacySidebarAction
 } from "../../components/sidebarNavigation.js";
+import { LocalStore } from "../../../core/storage/localStore.js";
 
 export function createLiveTvScreenMethods09() {
   return {
@@ -18,10 +19,10 @@ export function createLiveTvScreenMethods09() {
     closeSidebarToContent() {
       const isModern = LocalStore.get("modernSidebar", false);
       if (isModern) {
-        setModernSidebarExpanded(false);
-        setModernSidebarPillIconOnly(false);
+        setModernSidebarExpanded(this.container, false);
+        setModernSidebarPillIconOnly(this.container, false);
       } else {
-        setLegacySidebarExpanded(false);
+        setLegacySidebarExpanded(this.container, false);
       }
       this.focusContentNode();
     },
@@ -29,9 +30,9 @@ export function createLiveTvScreenMethods09() {
     openSidebar() {
       const isModern = LocalStore.get("modernSidebar", false);
       if (isModern) {
-        setModernSidebarExpanded(true);
+        setModernSidebarExpanded(this.container, true);
       } else {
-        setLegacySidebarExpanded(true);
+        setLegacySidebarExpanded(this.container, true);
       }
       this.focusSidebarNode();
     }
