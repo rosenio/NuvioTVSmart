@@ -84,6 +84,7 @@ export function createRouterMethods02() {
       };
     },
     async navigate(routeName, params = {}, options = {}) {
+      console.log("[DEBUG] Router.navigate called:", { routeName, params, options, stack: new Error().stack });
       if (routeName === "detail" && params?.itemType === "collection") {
         const ref = String(params.itemId || "").match(/^server:([^:]+):([^:]+)$/);
         if (ref) {

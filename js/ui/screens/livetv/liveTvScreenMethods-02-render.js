@@ -53,6 +53,7 @@ export function createLiveTvScreenMethods02() {
       `;
 
       // Bind sidebar events
+      console.log("[LiveTvScreen] Binding sidebar events with currentRoute=livetv");
       bindRootSidebarEvents(this.container, {
         currentRoute: "livetv",
         onSelectedAction: this.onSelectedAction.bind(this),
@@ -72,11 +73,18 @@ export function createLiveTvScreenMethods02() {
     },
 
     renderContent(state) {
+      console.log("[LiveTvScreen] renderContent state:", { 
+        hasPlaylist: state.hasPlaylist, 
+        channels: state.channels?.length, 
+        isLoading: state.isLoading, 
+        error: state.errorMessage 
+      });
       if (state.isLoading && state.channels.length === 0) {
         return renderLoadingIndicator({ size: "large", label: I18n.t("live_tv_loading", {}, "Loading channels...") });
       }
 
       if (!state.hasPlaylist) {
+        console.log("[LiveTvScreen] Rendering NO PLAYLIST empty state with Settings button");
         return `
           <div class="livetv-empty-state">
             <svg class="livetv-empty-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
@@ -412,7 +420,10 @@ export function createLiveTvScreenMethods02() {
 
       // Settings button
       this.container.querySelectorAll('[data-action="gotoSettings"]').forEach((btn) => {
-        btn.onclick = () => Router.navigate("settings");
+        btn.onclick = (e) => {
+          console.log("[DEBUG] Content gotoSettings onclick:", { isConnected: btn.isConnected, inContainer: this.container?.contains(btn) });
+          Router.navigate("settings");
+        };
       });
     },
 

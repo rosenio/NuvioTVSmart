@@ -1,6 +1,7 @@
 import { ScreenUtils } from "../../navigation/screen.js";
 import { LocalStore } from "../../../core/storage/localStore.js";
 import { setModernSidebarExpanded, setModernSidebarPillIconOnly, setLegacySidebarExpanded } from "../../components/sidebarNavigation.js";
+import { LiveTvRepository } from "../../../features/livetv/LiveTvRepository.js";
 
 export function createLiveTvScreenMethods08() {
   return {
@@ -24,10 +25,14 @@ export function createLiveTvScreenMethods08() {
         this.isMounted = true;
         this.routeStateKey = this.getRouteStateKey();
 
-        console.log("[LiveTvScreen] calling render()");
+        console.log("[LiveTvScreen] calling loadData()");
+        await this.loadData();
+        console.log("[LiveTvScreen] loadData() done");
+
+        // Render AFTER loadData initializes subscription (channels may still be loading)
         this.render();
 
-        // Ensure sidebar is collapsed on mount (after render so elements exist)
+        // NOW collapse sidebar - after render, before focus
         const isModern = LocalStore.get("modernSidebar", false);
         if (isModern) {
           setModernSidebarExpanded(this.container, false);
@@ -36,12 +41,13 @@ export function createLiveTvScreenMethods08() {
           setLegacySidebarExpanded(this.container, false);
         }
 
-        console.log("[LiveTvScreen] calling loadData()");
-        await this.loadData();
-        console.log("[LiveTvScreen] loadData() done");
-
-        // Focus first item
-        this.applyFocus();
+        // Focus handled in loadData subscription when channels load
+        // But if channels already loaded (cached), apply focus now (deferred)
+        const state = LiveTvRepository.getUiState();
+        if (state.channels && state.channels.length > 0 && !this._hasFocusedContent) {
+          this._hasFocusedContent = true;
+          requestAnimationFrame(() => this.applyFocus());
+        }
         console.log("[LiveTvScreen] mount() complete");
       } catch (e) {
         console.error("[LiveTvScreen] mount error:", e);
@@ -51,6 +57,10 @@ export function createLiveTvScreenMethods08() {
     async unmount() {
       console.log("[LiveTvScreen] unmount()");
       this.isMounted = false;
+      if (this.unsubscribeRepo) {
+        this.unsubscribeRepo();
+        this.unsubscribeRepo = null;
+      }
       this.cleanup();
     }
   };

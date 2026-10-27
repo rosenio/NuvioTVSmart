@@ -38,6 +38,8 @@ export function renderRootSidebar({ selectedRoute = "home", profile = null, layo
 
 export function bindRootSidebarEvents(container, { currentRoute = "", onExpandSidebar = null, onSelectedAction = null } = {}) {
   const focusables = Array.from(container?.querySelectorAll(".home-sidebar .focusable, .modern-sidebar-panel .focusable") || []);
+  console.log("[DEBUG] bindRootSidebarEvents currentRoute:", currentRoute);
+  console.log("[DEBUG] bindRootSidebarEvents focusables:", focusables.map(n => ({ action: n.dataset.action, index: n.dataset.navIndex, route: n.dataset.route })));
 
   const moveSidebarFocus = (currentNode, delta) => {
     const nodes = focusables.filter((node) => node.isConnected);
@@ -62,6 +64,7 @@ export function bindRootSidebarEvents(container, { currentRoute = "", onExpandSi
       event?.stopPropagation?.();
       event?.stopImmediatePropagation?.();
       const action = String(node.dataset.action || "");
+      console.log("[DEBUG] sidebar onclick:", { action, currentRoute, nodeIndex: node.dataset.navIndex });
       activateLegacySidebarAction(action, currentRoute);
       if (isSelectedSidebarAction(action, currentRoute) && typeof onSelectedAction === "function") {
         await onSelectedAction(node);
