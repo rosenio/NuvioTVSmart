@@ -453,7 +453,9 @@ button:focus-visible {
 .livetv-channel-card:focus,
 .livetv-channel-card:focus-visible {
   outline: none !important;
-  box-shadow: 0 0 0 3px var(--focus-color, #00d4aa), 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 0 3px var(--focus-color, #00d4aa),
+    0 4px 12px rgba(0, 0, 0, 0.4);
   background: rgba(255, 255, 255, 0.08);
   transform: scale(1.01);
   z-index: 1;
@@ -463,7 +465,9 @@ button:focus-visible {
 .livetv-recent-channel:focus,
 .livetv-recent-channel:focus-visible {
   outline: none !important;
-  box-shadow: 0 0 0 3px var(--focus-color, #00d4aa), 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 0 3px var(--focus-color, #00d4aa),
+    0 4px 12px rgba(0, 0, 0, 0.4);
   background: rgba(255, 255, 255, 0.08);
   transform: scale(1.01);
   z-index: 1;
@@ -476,6 +480,48 @@ button:focus-visible {
   box-shadow: 0 0 0 3px var(--focus-color, #00d4aa);
   background: var(--focus-color, #00d4aa);
   color: #000;
+}
+
+.livetv-category-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border-color, #333);
+  border-radius: 8px;
+  padding: 8px;
+  z-index: 10;
+  margin-top: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.livetv-category-option {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-primary, #fff);
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.livetv-category-option.focused,
+.livetv-category-option:focus,
+.livetv-category-option:focus-visible,
+.livetv-category-option[aria-selected="true"] {
+  outline: none !important;
+  background: var(--focus-color, #00d4aa);
+  color: #000;
+}
+
+.livetv-category-option:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .livetv-search-input:focus,

@@ -27,11 +27,12 @@ export function createLiveTvScreenMethods02() {
       });
       const profileState = await getSidebarProfileState({ cacheOnly: true });
       const isModern = LocalStore.get("modernSidebar", false);
+      const shellClass = isModern ? "home-shell livetv-screen has-modern-sidebar" : "home-shell livetv-screen";
 
       this.container.innerHTML = `
-        <div class="home-shell livetv-screen" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; position: relative;">
+        <div class="${shellClass}" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; position: relative;">
           ${renderRootSidebar({ selectedRoute: "livetv", profile: profileState, layout: { modernSidebar: isModern } })}
-          <main class="livetv-main" role="main" style="background: transparent; min-height: 100vh; padding: 20px; margin-left: 320px; box-sizing: border-box;">
+          <main class="home-main" role="main" style="background: transparent; min-height: 100vh; padding: 20px; box-sizing: border-box;">
             <header class="livetv-header">
               <h1 class="livetv-title">${I18n.t("live_tv_title", {}, "Live TV")}</h1>
               ${
@@ -392,6 +393,7 @@ export function createLiveTvScreenMethods02() {
           const menu = btn.nextElementSibling;
           const expanded = (menu.hidden = !menu.hidden);
           btn.setAttribute("aria-expanded", expanded);
+          this.render(); // Rebuild nav model with dropdown options
         };
       });
       this.container.querySelectorAll('[data-action="filter-category"]').forEach((btn) => {
@@ -445,8 +447,8 @@ export function createLiveTvScreenMethods02() {
         this.unsubscribeRepo = null;
       }
 
-      // Close sidebar before navigating to player
-      this.closeSidebarToContent();
+      // Close sidebar before navigating to player - fully hide for playback
+      this.closeSidebarToContent({ forPlayback: true });
 
       // Navigate to player screen with channel data (matching stream screen format)
       Router.navigate("player", {

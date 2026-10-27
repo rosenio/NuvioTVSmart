@@ -19,7 +19,6 @@ function isTextField(node) {
 }
 
 export function createLiveTvScreenMethods10() {
-
   return {
     getDirectionalRepeatThrottleMs(direction) {
       if (direction === "up" || direction === "down") {
@@ -33,15 +32,21 @@ export function createLiveTvScreenMethods10() {
         ? Array.from(this.container.querySelectorAll(".home-sidebar .focusable, .modern-sidebar-panel .focusable"))
         : [];
       const contentRoot = this.container?.querySelector(".livetv-content") || this.container;
+      const filterChips = Array.from(contentRoot.querySelectorAll(".livetv-filter-chip"));
       const channelCards = Array.from(contentRoot.querySelectorAll(".livetv-channel-card"));
       const recentChannels = Array.from(contentRoot.querySelectorAll(".livetv-recent-channel"));
       const actionBtns = Array.from(contentRoot.querySelectorAll(".livetv-favorite-btn, .livetv-play-btn, .livetv-recent-play"));
       const refreshBtn = contentRoot.querySelector('[data-action="refresh"]:not(.home-nav-item)');
       const gotoSettingsBtn = contentRoot.querySelector('[data-action="gotoSettings"]:not(.home-nav-item)');
+      // Dropdown options (only when dropdown is open)
+      const dropdownOpen = contentRoot.querySelector(".livetv-category-dropdown-menu:not([hidden])");
+      const dropdownOptions = dropdownOpen ? Array.from(dropdownOpen.querySelectorAll(".livetv-category-option")) : [];
 
       const rows = [];
+      if (filterChips.length) rows.push(filterChips);
       if (channelCards.length) rows.push(channelCards);
       if (recentChannels.length) rows.push(recentChannels);
+      if (dropdownOptions.length) rows.push(dropdownOptions);
       const actionRow = [];
       if (actionBtns.length) actionRow.push(...actionBtns);
       if (refreshBtn) actionRow.push(refreshBtn);
@@ -83,7 +88,9 @@ export function createLiveTvScreenMethods10() {
       try {
         node.focus({ preventScroll: true });
       } catch (_) {
-        try { node.focus(); } catch (_) {}
+        try {
+          node.focus();
+        } catch (_) {}
       }
     },
 
@@ -196,34 +203,15 @@ export function createLiveTvScreenMethods10() {
         return false; // Let input handle other keys
       }
 
-      // Handle category dropdown
+      // Handle category dropdown - Escape to close
       const dropdownOpen = this.container?.querySelector(".livetv-category-dropdown-menu:not([hidden])");
-      if (dropdownOpen) {
-        if (keyCode === 27) {
-          event.preventDefault();
-          const toggleBtn = this.container.querySelector('[data-action="toggle-category-dropdown"]');
-          dropdownOpen.hidden = true;
-          toggleBtn?.setAttribute("aria-expanded", "false");
-          toggleBtn?.focus();
-          return true;
-        }
-        if (keyCode === 40 || keyCode === 38) {
-          event.preventDefault();
-          const options = dropdownOpen.querySelectorAll(".livetv-category-option");
-          const currentIndex = Array.from(options).findIndex((o) => o === focusedNode);
-          let nextIndex = currentIndex;
-          if (keyCode === 40) nextIndex = Math.min(options.length - 1, currentIndex + 1);
-          if (keyCode === 38) nextIndex = Math.max(0, currentIndex - 1);
-          if (nextIndex !== currentIndex) {
-            options[nextIndex]?.focus();
-          }
-          return true;
-        }
-        if (keyCode === 13) {
-          event.preventDefault();
-          focusedNode?.click();
-          return true;
-        }
+      if (dropdownOpen && keyCode === 27) {
+        event.preventDefault();
+        const toggleBtn = this.container.querySelector('[data-action="toggle-category-dropdown"]');
+        dropdownOpen.hidden = true;
+        toggleBtn?.setAttribute("aria-expanded", "false");
+        toggleBtn?.focus();
+        return true;
       }
 
       // Handle Enter/Space on channel cards for play
@@ -237,42 +225,17 @@ export function createLiveTvScreenMethods10() {
         }
       }
 
-      // Handle action buttons (favorite, play)
-      if (focusedNode.classList.contains("livetv-favorite-btn") || focusedNode.classList.contains("livetv-play-btn") || focusedNode.classList.contains("livetv-recent-play")) {
+      // Handle action buttons (favorite, play) - left goes back to card
+      if (
+        focusedNode.classList.contains("livetv-favorite-btn") ||
+        focusedNode.classList.contains("livetv-play-btn") ||
+        focusedNode.classList.contains("livetv-recent-play")
+      ) {
         if (keyCode === 37) {
           event.preventDefault();
           const card = focusedNode.closest(".livetv-channel-card, .livetv-recent-channel");
           card?.focus();
           return true;
-        }
-      }
-
-      // Handle filter chips - horizontal navigation only
-      if (focusedNode.classList.contains("livetv-filter-chip")) {
-        const filterChips = this.container?.querySelectorAll(".livetv-filter-chip");
-        const currentIndex = Array.from(filterChips).findIndex((c) => c === focusedNode);
-        if (currentIndex >= 0) {
-          if (keyCode === 39) {
-            event.preventDefault();
-            const nextIndex = Math.min(filterChips.length - 1, currentIndex + 1);
-            filterChips[nextIndex]?.focus();
-            return true;
-          }
-          if (keyCode === 37) {
-            event.preventDefault();
-            const prevIndex = Math.max(0, currentIndex - 1);
-            filterChips[prevIndex]?.focus();
-            return true;
-          }
-          if (keyCode === 40 || keyCode === 38) {
-            // Up/Down from filter chips should go to channel cards
-            event.preventDefault();
-            const channelCards = this.container?.querySelectorAll(".livetv-channel-card");
-            if (channelCards?.length) {
-              channelCards[0]?.focus();
-            }
-            return true;
-          }
         }
       }
 
@@ -285,6 +248,6 @@ export function createLiveTvScreenMethods10() {
       if (direction && this.lastDirectionalKeyAtByDirection) {
         delete this.lastDirectionalKeyAtByDirection[direction];
       }
-    },
+    }
   };
 }

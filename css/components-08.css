@@ -77,6 +77,20 @@
   transition: width 385ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+.modern-sidebar-shell.hidden {
+  width: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.modern-sidebar-shell.hidden .modern-sidebar-panel {
+  display: none;
+}
+
+.modern-sidebar-shell.hidden .modern-sidebar-pill {
+  display: none;
+}
+
 .modern-sidebar-shell,
 .modern-sidebar-shell * {
   box-sizing: border-box;

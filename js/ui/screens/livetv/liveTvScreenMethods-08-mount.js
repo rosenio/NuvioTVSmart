@@ -32,11 +32,10 @@ export function createLiveTvScreenMethods08() {
         // Render AFTER loadData initializes subscription (channels may still be loading)
         this.render();
 
-        // NOW collapse sidebar - after render, before focus
+        // Restore sidebar from playback hidden state to normal collapsed state
         const isModern = LocalStore.get("modernSidebar", false);
         if (isModern) {
-          setModernSidebarExpanded(this.container, false);
-          setModernSidebarPillIconOnly(this.container, false);
+          this.restoreSidebarFromPlayback();
         } else {
           setLegacySidebarExpanded(this.container, false);
         }
