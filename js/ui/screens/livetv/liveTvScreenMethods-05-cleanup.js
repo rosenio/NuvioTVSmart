@@ -1,6 +1,10 @@
 export function createLiveTvScreenMethods05() {
   return {
     cleanup() {
+      // Hide container before clearing reference (prevents sidebar bleed-through on navigation)
+      if (this.container) {
+        this.container.style.display = "none";
+      }
       this.isMounted = false;
       if (this.unsubscribeRepo) {
         this.unsubscribeRepo();

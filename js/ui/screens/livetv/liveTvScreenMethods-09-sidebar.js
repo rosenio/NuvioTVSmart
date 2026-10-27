@@ -34,39 +34,59 @@ export function createLiveTvScreenMethods09() {
           setModernSidebarPillIconOnly(this.container, false);
         }
       } else {
-        setLegacySidebarExpanded(this.container, false);
-      }
-      // Use new navigation system to focus first channel card
-      requestAnimationFrame(() => {
-        this.buildNavModel();
-        if (this.navModel?.rows?.[0]?.[0]) {
-          this.focusNode(null, this.navModel.rows[0][0]);
+        if (forPlayback) {
+          this.hideSidebarForPlayback();
+        } else {
+          setLegacySidebarExpanded(this.container, false);
         }
-      });
+      }
+      // Only rebuild nav model and focus if NOT navigating away for playback
+      if (!forPlayback) {
+        requestAnimationFrame(() => {
+          if (!this.container || !this.container.isConnected) return;
+          this.buildNavModel();
+          if (this.navModel?.rows?.[0]?.[0]) {
+            this.focusNode(null, this.navModel.rows[0][0]);
+          }
+        });
+      }
     },
 
     hideSidebarForPlayback() {
-      const shell = this.container?.querySelector(".modern-sidebar-shell");
-      if (shell) {
-        shell.classList.add("hidden");
-        // Ensure panel and pill are hidden
-        const panel = shell.querySelector(".modern-sidebar-panel");
-        const pill = shell.querySelector(".modern-sidebar-pill");
+      // Hide modern sidebar
+      const modernShell = this.container?.querySelector(".modern-sidebar-shell");
+      if (modernShell) {
+        modernShell.classList.add("hidden");
+        const panel = modernShell.querySelector(".modern-sidebar-panel");
+        const pill = modernShell.querySelector(".modern-sidebar-pill");
         if (panel) panel.setAttribute("aria-hidden", "true");
         if (pill) pill.setAttribute("aria-expanded", "false");
+      }
+      // Hide legacy sidebar
+      const legacySidebar = this.container?.querySelector(".home-sidebar");
+      if (legacySidebar) {
+        legacySidebar.classList.add("hidden");
+        legacySidebar.setAttribute("aria-hidden", "true");
       }
     },
 
     restoreSidebarFromPlayback() {
-      const shell = this.container?.querySelector(".modern-sidebar-shell");
-      if (shell) {
-        shell.classList.remove("hidden");
-        // Restore normal collapsed state
+      // Restore modern sidebar
+      const modernShell = this.container?.querySelector(".modern-sidebar-shell");
+      if (modernShell) {
+        modernShell.classList.remove("hidden");
         const isModern = LocalStore.get("modernSidebar", false);
         if (isModern) {
           setModernSidebarExpanded(this.container, false);
           setModernSidebarPillIconOnly(this.container, false);
         }
+      }
+      // Restore legacy sidebar
+      const legacySidebar = this.container?.querySelector(".home-sidebar");
+      if (legacySidebar) {
+        legacySidebar.classList.remove("hidden");
+        legacySidebar.removeAttribute("aria-hidden");
+        setLegacySidebarExpanded(this.container, false);
       }
     },
 
@@ -79,6 +99,7 @@ export function createLiveTvScreenMethods09() {
       }
       // Use new navigation system to focus first sidebar item
       requestAnimationFrame(() => {
+        if (!this.container || !this.container.isConnected) return;
         this.buildNavModel();
         if (this.navModel?.sidebar?.[0]) {
           this.focusNode(null, this.navModel.sidebar[0]);

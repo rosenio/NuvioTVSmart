@@ -626,6 +626,14 @@
   padding-right: 0;
 }
 
+.home-sidebar.hidden {
+  width: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  display: none !important;
+}
+
 .home-sidebar.expanded {
   width: var(--legacy-sidebar-open-width);
   flex-basis: var(--legacy-sidebar-open-width);
