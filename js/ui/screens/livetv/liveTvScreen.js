@@ -29,6 +29,7 @@ import { createLiveTvScreenMethods05 } from "./liveTvScreenMethods-05-cleanup.js
 import { createLiveTvScreenMethods06 } from "./liveTvScreenMethods-06-focus-node.js";
 import { createLiveTvScreenMethods07 } from "./liveTvScreenMethods-07-on-sidebar-reselect.js";
 import { createLiveTvScreenMethods08 } from "./liveTvScreenMethods-08-mount.js";
+import { createLiveTvScreenMethods09 } from "./liveTvScreenMethods-09-sidebar.js";
 
 export {
   Router,
@@ -61,6 +62,7 @@ const _methods05 = createLiveTvScreenMethods05();
 const _methods06 = createLiveTvScreenMethods06();
 const _methods07 = createLiveTvScreenMethods07();
 const _methods08 = createLiveTvScreenMethods08();
+const _methods09 = createLiveTvScreenMethods09();
 
 export const LiveTvScreen = {
   ..._methods01,
@@ -71,6 +73,7 @@ export const LiveTvScreen = {
   ..._methods06,
   ..._methods07,
   ..._methods08,
+  ..._methods09,
   mount: _methods08.mount,
   unmount: _methods08.unmount
 };

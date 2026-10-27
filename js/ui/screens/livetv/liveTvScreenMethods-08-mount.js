@@ -1,9 +1,16 @@
+import { ScreenUtils } from "../../navigation/screen.js";
+
 export function createLiveTvScreenMethods08() {
   return {
     async mount(params, navigationContext) {
       console.log("[LiveTvScreen] mount() start");
       try {
-        this.container = navigationContext.container;
+        this.container = document.getElementById("livetv");
+        if (!this.container) {
+          console.error("[LiveTvScreen] No container found!");
+          return;
+        }
+        ScreenUtils.show(this.container);
         this.focusZone = "content";
         this.sidebarFocusIndex = 0;
         this.searchQuery = "";

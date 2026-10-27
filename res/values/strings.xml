@@ -2805,6 +2805,7 @@
     <string name="auth.qr.serviceUnavailable">QR sign-in is temporarily unavailable. Please try again later.</string>
     <string name="auth.qr.unavailableWithReason">QR unavailable: {{reason}}</string>
     <string name="auth.qr.waitingApproval">Waiting for approval on your phone...</string>
+    <string name="auth.qr.expires">QR code expires in {{seconds}}s</string>
     <string name="auth.signIn.devEmailLogin">Dev Email Login</string>
     <string name="auth.syncCode.clearCode">Clear Code</string>
     <string name="auth.syncCode.currentCode">Current code: {{value}}</string>

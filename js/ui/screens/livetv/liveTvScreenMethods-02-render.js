@@ -1,6 +1,7 @@
 import { I18n } from "../../../i18n/index.js";
 import { LocalStore } from "../../../core/storage/localStore.js";
 import { LiveTvRepository } from "../../../features/livetv/LiveTvRepository.js";
+import { Router } from "../../navigation/routerState.js";
 import {
   renderRootSidebar,
   getSidebarProfileState,
@@ -12,14 +13,25 @@ import { renderLoadingIndicator } from "../../components/loadingIndicator.js";
 export function createLiveTvScreenMethods02() {
   return {
     async render() {
+      if (!this.container) {
+        console.warn("[LiveTvScreen] render() skipped: no container");
+        return;
+      }
       const state = LiveTvRepository.getUiState();
+      console.log("[LiveTvScreen] render state:", {
+        hasPlaylist: state.hasPlaylist,
+        channels: state.channels?.length,
+        isLoading: state.isLoading,
+        error: state.errorMessage,
+        playlists: state.playlists?.map((p) => ({ name: p.name, enabled: p.isEnabled }))
+      });
       const profileState = await getSidebarProfileState({ cacheOnly: true });
       const isModern = LocalStore.get("modernSidebar", false);
 
       this.container.innerHTML = `
-        <div class="livetv-screen" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh;">
+        <div class="livetv-screen" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; position: relative;">
           ${renderRootSidebar({ selectedRoute: "livetv", profile: profileState, layout: { modernSidebar: isModern } })}
-          <main class="livetv-main" role="main">
+          <main class="livetv-main" role="main" style="background: transparent; min-height: 100vh; padding: 20px; margin-left: 320px; box-sizing: border-box;">
             <header class="livetv-header">
               <h1 class="livetv-title">${I18n.t("live_tv_title", {}, "Live TV")}</h1>
               ${
@@ -56,7 +68,7 @@ export function createLiveTvScreenMethods02() {
       this.bindChannelCards();
 
       // Restore focus
-      this.restoreFocus();
+      this.applyFocus();
     },
 
     renderContent(state) {
@@ -101,7 +113,7 @@ export function createLiveTvScreenMethods02() {
         <div class="livetv-controls-sticky">
           ${this.renderChannelControls(state)}
         </div>
-        <div class="livetv-channel-list" role="list" aria-label="${I18n.t("live_tv_channels", {}, "Channels")}">
+        <div class="livetv-channel-list" role="list" aria-label="${I18n.t("live_tv_channels", {}, "Channels")}" style="max-height: calc(100vh - 280px); overflow-y: auto; padding-right: 8px;">
           ${this.renderChannelList(state)}
         </div>
         ${
@@ -193,9 +205,11 @@ export function createLiveTvScreenMethods02() {
         const nextProgram = programs.find((p) => p.startMillis > nowMillis);
 
         html += `
-          <div class="livetv-recent-channel focusable" data-channel-id="${this.lastWatchedChannel.id}" data-action="play-recent" role="listitem">
-            <div class="livetv-recent-logo" style="background-image: url('${this.lastWatchedChannel.logoUrl || ""}')"></div>
-            <div class="livetv-recent-info">
+          <div class="livetv-recent-channel focusable" data-channel-id="${this.lastWatchedChannel.id}" data-action="play-recent" role="listitem" style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; min-height: 72px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 16px;">
+            <div class="livetv-recent-logo" aria-hidden="true" style="flex: 0 0 56px; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;">
+              <img src="${this.lastWatchedChannel.logoUrl || ""}" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDN2MTAuNTVjLS41OS0uMzQtMS4yNy0uNTUtMi0uNTUtMi4yMSAwLTQgMS43OS00IDRzMS43OSA0IDQgNCA0LTEuNzkgNC00VjdoNHYtNmgtNnoiIGZpbGw9IiM2NjYiLz48L3N2Zz4='" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="livetv-recent-info" style="flex: 1; min-width: 0;">
               <span class="livetv-recent-label">${I18n.t("live_tv_last_watched_title", {}, "Last Watched")}</span>
               <h3 class="livetv-recent-name">${this.lastWatchedChannel.name}</h3>
               <span class="livetv-recent-category">${categoryName}</span>
@@ -224,8 +238,8 @@ export function createLiveTvScreenMethods02() {
                   : ""
               }
             </div>
-            <button class="livetv-recent-play focusable" data-action="play-recent" aria-label="${I18n.t("live_tv_button_continue", {}, "Continue Watching")}">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <button class="livetv-recent-play focusable" data-action="play-recent" aria-label="${I18n.t("live_tv_button_continue", {}, "Continue Watching")}" style="flex: 0 0 44px; width: 44px; height: 44px; border: none; background: #4ade80; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0f0f23; transition: all 0.2s;">
+              <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px; margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
         `;
@@ -244,27 +258,31 @@ export function createLiveTvScreenMethods02() {
       const nextProgram = programs.find((p) => p.startMillis > nowMillis);
 
       return `
-        <div class="livetv-channel-card focusable" data-channel-id="${channel.id}" role="listitem" tabindex="0">
-          <div class="livetv-channel-logo" style="background-image: url('${channel.logoUrl || ""}')" aria-hidden="true"></div>
-          <div class="livetv-channel-info">
-            <h3 class="livetv-channel-name">${channel.name}</h3>
-            <span class="livetv-channel-category">${categoryName}</span>
+        <div class="livetv-channel-card focusable" data-channel-id="${channel.id}" role="listitem" tabindex="0" style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; min-height: 72px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px;">
+          <div class="livetv-channel-logo" aria-hidden="true" style="flex: 0 0 56px; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;">
+            <img src="${channel.logoUrl || ""}" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDN2MTAuNTVjLS41OS0uMzQtMS4yNy0uNTUtMi0uNTUtMi4yMSAwLTQgMS43OS00IDRzMS43OSA0IDQgNCA0LTEuNzkgNC00VjdoNHYtNmgtNnoiIGZpbGw9IiM2NjYiLz48L3N2Zz4='" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="livetv-channel-info" style="flex: 1; min-width: 0;">
+            <h3 class="livetv-channel-name" style="margin: 0 0 4px; font-size: 18px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${channel.name}</h3>
+            <span class="livetv-channel-category" style="font-size: 14px; color: #aaa;">${categoryName}</span>
             ${
               currentProgram
                 ? `
-              <div class="livetv-epg-now-next">
-                <div class="livetv-epg-now">
-                  <span class="livetv-epg-now-label">${I18n.t("live_tv_epg_now", {}, "Now")}</span>
-                  <span class="livetv-epg-now-title">${currentProgram.title}</span>
-                  <div class="livetv-epg-progress" style="--progress: ${(((nowMillis - currentProgram.startMillis) / (currentProgram.endMillis - currentProgram.startMillis)) * 100).toFixed(1)}%"></div>
+              <div class="livetv-epg-now-next" style="margin-top: 8px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <div class="livetv-epg-now" style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;">
+                  <span class="livetv-epg-now-label" style="font-size: 11px; color: #4ade80; text-transform: uppercase; font-weight: 600;">${I18n.t("live_tv_epg_now", {}, "Now")}</span>
+                  <span class="livetv-epg-now-title" style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${currentProgram.title}</span>
+                  <div class="livetv-epg-progress" style="--progress: ${(((nowMillis - currentProgram.startMillis) / (currentProgram.endMillis - currentProgram.startMillis)) * 100).toFixed(1)}%; flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; position: relative; overflow: hidden;">
+                    <div style="width: ${(((nowMillis - currentProgram.startMillis) / (currentProgram.endMillis - currentProgram.startMillis)) * 100).toFixed(1)}%; height: 100%; background: #4ade80; border-radius: 2px;"></div>
+                  </div>
                 </div>
                 ${
                   nextProgram
                     ? `
-                  <div class="livetv-epg-next">
-                    <span class="livetv-epg-next-label">${I18n.t("live_tv_epg_next", {}, "Next")}</span>
-                    <span class="livetv-epg-next-time">${this.formatEpgTime(nextProgram.startMillis)}</span>
-                    <span class="livetv-epg-next-title">${nextProgram.title}</span>
+                  <div class="livetv-epg-next" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #ccc;">
+                    <span class="livetv-epg-next-label" style="font-size: 11px; color: #888; text-transform: uppercase;">${I18n.t("live_tv_epg_next", {}, "Next")}</span>
+                    <span class="livetv-epg-next-time" style="color: #888; font-size: 12px;">${this.formatEpgTime(nextProgram.startMillis)}</span>
+                    <span class="livetv-epg-next-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">${nextProgram.title}</span>
                   </div>
                 `
                     : ""
@@ -274,11 +292,11 @@ export function createLiveTvScreenMethods02() {
                 : ""
             }
           </div>
-          <button class="livetv-favorite-btn${isFavorite ? " favorite" : ""} focusable" data-action="toggle-favorite" data-channel-id="${channel.id}" aria-label="${isFavorite ? I18n.t("live_tv_remove_favorite", {}, "Remove from favorites") : I18n.t("live_tv_add_favorite", {}, "Add to favorites")}" aria-pressed="${isFavorite}">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${isFavorite ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" : "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"}" fill="${isFavorite ? "currentColor" : "none"}" stroke="${isFavorite ? "none" : "currentColor"}" stroke-width="2"/></svg>
+          <button class="livetv-favorite-btn${isFavorite ? " favorite" : ""} focusable" data-action="toggle-favorite" data-channel-id="${channel.id}" aria-label="${isFavorite ? I18n.t("live_tv_remove_favorite", {}, "Remove from favorites") : I18n.t("live_tv_add_favorite", {}, "Add to favorites")}" aria-pressed="${isFavorite}" style="flex: 0 0 44px; width: 44px; height: 44px; border: none; background: rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: ${isFavorite ? "#ef4444" : "#888"}; transition: all 0.2s;">
+            <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px;"><path d="${isFavorite ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" : "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"}" fill="${isFavorite ? "currentColor" : "none"}" stroke="${isFavorite ? "none" : "currentColor"}" stroke-width="2"/></svg>
           </button>
-          <button class="livetv-play-btn focusable" data-action="play-channel" data-channel-id="${channel.id}" aria-label="${I18n.t("live_tv_button_play", {}, "Play")}">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <button class="livetv-play-btn focusable" data-action="play-channel" data-channel-id="${channel.id}" aria-label="${I18n.t("live_tv_button_play", {}, "Play")}" style="flex: 0 0 44px; width: 44px; height: 44px; border: none; background: #4ade80; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0f0f23; transition: all 0.2s;">
+            <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px; margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
           </button>
         </div>
       `;

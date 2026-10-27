@@ -35,7 +35,8 @@ import {
   liveTvEpgKey,
   epgIdNameCandidates,
   formatEpgTime,
-  formatEpgTimeRange
+  formatEpgTimeRange,
+  createUrlPlaylist
 } from "./LiveTvModels.js";
 
 // Storage keys
@@ -115,7 +116,10 @@ export function subscribe(listener) {
  * @returns {LiveTvUiState}
  */
 export function getUiState() {
-  return _uiState;
+  return {
+    ..._uiState,
+    hasPlaylist: hasLiveTvPlaylist(_uiState)
+  };
 }
 
 /**

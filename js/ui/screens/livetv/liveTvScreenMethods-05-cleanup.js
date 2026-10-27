@@ -1,6 +1,7 @@
 export function createLiveTvScreenMethods05() {
   return {
     cleanup() {
+      this.isMounted = false;
       if (this.unsubscribeRepo) {
         this.unsubscribeRepo();
         this.unsubscribeRepo = null;

@@ -7,7 +7,7 @@ export function createLiveTvScreenMethods03() {
 
       // Subscribe to repository updates
       this.unsubscribeRepo = LiveTvRepository.subscribe(() => {
-        if (this.container && this.container.isConnected) {
+        if (this.isMounted && this.container && this.container.isConnected) {
           this.render();
         }
       });
