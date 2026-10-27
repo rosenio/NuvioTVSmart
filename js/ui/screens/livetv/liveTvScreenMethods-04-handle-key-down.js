@@ -15,9 +15,15 @@ export function createLiveTvScreenMethods04() {
       // Handle sidebar navigation
       if (isRootSidebarNode(focusedNode)) {
         if (keyCode === 37) {
-          // Left
+          // Left - close sidebar and focus content
           event.preventDefault();
-          this.focusSidebarNode();
+          this.closeSidebarToContent();
+          return true;
+        }
+        if (keyCode === 39) {
+          // Right - close sidebar and focus content
+          event.preventDefault();
+          this.closeSidebarToContent();
           return true;
         }
       }

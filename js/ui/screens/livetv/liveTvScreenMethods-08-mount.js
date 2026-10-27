@@ -1,4 +1,6 @@
 import { ScreenUtils } from "../../navigation/screen.js";
+import { LocalStore } from "../../../core/storage/localStore.js";
+import { setModernSidebarExpanded, setModernSidebarPillIconOnly, setLegacySidebarExpanded } from "../../components/sidebarNavigation.js";
 
 export function createLiveTvScreenMethods08() {
   return {
@@ -11,6 +13,16 @@ export function createLiveTvScreenMethods08() {
           return;
         }
         ScreenUtils.show(this.container);
+
+        // Ensure sidebar is collapsed on mount
+        const isModern = LocalStore.get("modernSidebar", false);
+        if (isModern) {
+          setModernSidebarExpanded(false);
+          setModernSidebarPillIconOnly(false);
+        } else {
+          setLegacySidebarExpanded(false);
+        }
+
         this.focusZone = "content";
         this.sidebarFocusIndex = 0;
         this.searchQuery = "";

@@ -29,7 +29,7 @@ export function createLiveTvScreenMethods02() {
       const isModern = LocalStore.get("modernSidebar", false);
 
       this.container.innerHTML = `
-        <div class="livetv-screen" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; position: relative;">
+        <div class="home-shell livetv-screen" style="background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; position: relative;">
           ${renderRootSidebar({ selectedRoute: "livetv", profile: profileState, layout: { modernSidebar: isModern } })}
           <main class="livetv-main" role="main" style="background: transparent; min-height: 100vh; padding: 20px; margin-left: 320px; box-sizing: border-box;">
             <header class="livetv-header">
@@ -419,6 +419,9 @@ export function createLiveTvScreenMethods02() {
     async playChannel(channel) {
       const preparedChannel = await LiveTvRepository.prepareForPlayback(channel);
       LiveTvRepository.markChannelWatched(preparedChannel);
+
+      // Close sidebar before navigating to player
+      this.closeSidebarToContent();
 
       // Navigate to player screen with channel data (matching stream screen format)
       Router.navigate("player", {
