@@ -334,6 +334,11 @@ export const SECTION_META = [
     subtitleKey: "settings.sections.playback.subtitle"
   },
   {
+    id: "livetv",
+    labelKey: "settings_livetv_title",
+    subtitleKey: "settings_livetv_subtitle"
+  },
+  {
     id: "trakt",
     labelKey: "settings_tracking_title",
     subtitleKey: "settings_tracking_subtitle"
@@ -360,6 +365,7 @@ export const SECTION_ICONS = {
   plugins: "build",
   integration: "link",
   streams: "style",
+  livetv: "live_tv",
   advanced: "tune",
   trakt: "trakt",
   about: "info"

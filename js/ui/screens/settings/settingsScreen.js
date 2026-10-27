@@ -1,5 +1,6 @@
 import { escapeMediaServerText } from "./settingsMediaServersSection.js";
 import { createTrackingSettingsMethods } from "./trackingSettingsMethods.js";
+import { LiveTvSettingsSection } from "./liveTvSettingsSection.js";
 /* global __NUVIO_APP_VERSION__ */
 import { createSettingsScreenMethods01 } from "./settingsScreenMethods-01-get-current-rail-scroll-top.js";
 import { createSettingsScreenMethods02 } from "./settingsScreenMethods-02-render-action-row.js";
@@ -35,5 +36,6 @@ export const SettingsScreen = {
   ...createSettingsScreenMethods13(),
   ...createSettingsScreenMethods14(),
   ...createSettingsScreenMethods15(),
-  ...createTrackingSettingsMethods()
+  ...createTrackingSettingsMethods(),
+  ...LiveTvSettingsSection
 };

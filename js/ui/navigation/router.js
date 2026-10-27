@@ -26,6 +26,7 @@ import { CatalogSeeAllScreen } from "../screens/catalog/catalogSeeAllScreen.js";
 import { TmdbEntityBrowseScreen } from "../screens/tmdb/tmdbEntityBrowseScreen.js";
 import { FolderDetailScreen } from "../screens/collection/folderDetailScreen.js";
 import { PartyScreen } from "../screens/party/partyScreen.js";
+import { LiveTvScreen } from "../screens/livetv/liveTvScreen.js";
 import { Platform } from "../../platform/index.js";
 import { TizenCapabilities } from "../../platform/tizen/tizenCapabilities.js";
 import { RouteStateStore } from "./routeStateStore.js";
@@ -66,6 +67,7 @@ export {
   TmdbEntityBrowseScreen,
   FolderDetailScreen,
   PartyScreen,
+  LiveTvScreen,
   Platform,
   TizenCapabilities,
   RouteStateStore,
@@ -192,7 +194,8 @@ Object.assign(Router, {
     catalogSeeAll: CatalogSeeAllScreen,
     tmdbEntityBrowse: TmdbEntityBrowseScreen,
     folderDetail: FolderDetailScreen,
-    watchParty: PartyScreen
+    watchParty: PartyScreen,
+    livetv: LiveTvScreen
   },
   ...createRouterMethods01(),
   ...createRouterMethods02(),

@@ -193,6 +193,7 @@ export function createSettingsScreenMethods12() {
       if (section.id === "integration") return this.renderIntegrationSection(model);
       if (section.id === "streams") return this.renderStreamsSection(model);
       if (section.id === "playback") return this.renderPlaybackSection(model);
+      if (section.id === "livetv") return this.renderLiveTvSettings();
       if (section.id === "trakt") return this.renderTrackingSection();
       if (section.id === "advanced") return this.renderAdvancedSection(model);
       return this.renderAboutSection(model);
