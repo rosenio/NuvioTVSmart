@@ -32,26 +32,35 @@ export function createLiveTvScreenMethods10() {
         ? Array.from(this.container.querySelectorAll(".home-sidebar .focusable, .modern-sidebar-panel .focusable"))
         : [];
       const contentRoot = this.container?.querySelector(".livetv-content") || this.container;
-      const filterChips = Array.from(contentRoot.querySelectorAll(".livetv-filter-chip"));
-      const channelCards = Array.from(contentRoot.querySelectorAll(".livetv-channel-card"));
+      // Row 0: Last watched (recent channel) - if exists
       const recentChannels = Array.from(contentRoot.querySelectorAll(".livetv-recent-channel"));
+      // Row 1: Filter bar elements (library-style)
+      const viewModeButtons = Array.from(contentRoot.querySelectorAll(".library-view-mode-button"));
+      const categoryPicker = Array.from(contentRoot.querySelectorAll(".library-picker-anchor"));
+      const searchInput = Array.from(contentRoot.querySelectorAll(".library-cloud-search-input"));
+      const filterBarFocusables = [...viewModeButtons, ...categoryPicker, ...searchInput];
+      // Row 2: Channel cards
+      const channelCards = Array.from(contentRoot.querySelectorAll(".livetv-channel-card"));
+      // Row 3: Action buttons
       const actionBtns = Array.from(contentRoot.querySelectorAll(".livetv-favorite-btn, .livetv-play-btn, .livetv-recent-play"));
       const refreshBtn = contentRoot.querySelector('[data-action="refresh"]:not(.home-nav-item)');
       const gotoSettingsBtn = contentRoot.querySelector('[data-action="gotoSettings"]:not(.home-nav-item)');
-      // Dropdown options (only when dropdown is open)
-      const dropdownOpen = contentRoot.querySelector(".livetv-category-dropdown-menu:not([hidden])");
-      const dropdownOptions = dropdownOpen ? Array.from(dropdownOpen.querySelectorAll(".livetv-category-option")) : [];
+      // Row 4: Dropdown options (only when dropdown is open)
+      const dropdownOpen = contentRoot.querySelector(".library-picker-menu:not([hidden])");
+      const dropdownOptions = dropdownOpen ? Array.from(dropdownOpen.querySelectorAll(".library-picker-option")) : [];
 
       const rows = [];
-      if (filterChips.length) rows.push(filterChips);
-      if (channelCards.length) rows.push(channelCards);
       if (recentChannels.length) rows.push(recentChannels);
+      if (filterBarFocusables.length) rows.push(filterBarFocusables);
+      if (channelCards.length) rows.push(channelCards);
+      if (actionBtns.length || refreshBtn || gotoSettingsBtn) {
+        const actionRow = [];
+        if (actionBtns.length) actionRow.push(...actionBtns);
+        if (refreshBtn) actionRow.push(refreshBtn);
+        if (gotoSettingsBtn) actionRow.push(gotoSettingsBtn);
+        rows.push(actionRow);
+      }
       if (dropdownOptions.length) rows.push(dropdownOptions);
-      const actionRow = [];
-      if (actionBtns.length) actionRow.push(...actionBtns);
-      if (refreshBtn) actionRow.push(refreshBtn);
-      if (gotoSettingsBtn) actionRow.push(gotoSettingsBtn);
-      if (actionRow.length) rows.push(actionRow);
 
       sidebar.forEach((node, index) => {
         node.dataset.navZone = "sidebar";
@@ -95,8 +104,10 @@ export function createLiveTvScreenMethods10() {
     },
 
     focusNode(current, target, direction = null, inputMeta = null) {
-      if (!current || !target || current === target) return false;
-      current.classList.remove("focused");
+      if (!target) return false;
+      if (current && current !== target) {
+        current.classList.remove("focused");
+      }
       target.classList.add("focused");
       this.focusWithoutAutoScroll(target, { suppressDelegatedFocus: true });
       if (this.isMainNode(target)) {
@@ -207,11 +218,52 @@ export function createLiveTvScreenMethods10() {
       const dropdownOpen = this.container?.querySelector(".livetv-category-dropdown-menu:not([hidden])");
       if (dropdownOpen && keyCode === 27) {
         event.preventDefault();
-        const toggleBtn = this.container.querySelector('[data-action="toggle-category-dropdown"]');
-        dropdownOpen.hidden = true;
-        toggleBtn?.setAttribute("aria-expanded", "false");
-        toggleBtn?.focus();
+        this.categoryDropdownOpen = false;
+        this.render();
         return true;
+      }
+
+      // Handle Enter/Space on category anchor to toggle dropdown
+      const categoryAnchor = this.container?.querySelector(".library-picker-anchor[data-action='toggle-category-dropdown']");
+      if (categoryAnchor && categoryAnchor === focusedNode && (keyCode === 13 || keyCode === 32)) {
+        event.preventDefault();
+        this.categoryDropdownOpen = !this.categoryDropdownOpen;
+        if (this.categoryDropdownOpen) this.filterMode = "category";
+        this.render();
+        return true;
+      }
+
+      // Handle dropdown options when open
+      if (this.categoryDropdownOpen) {
+        const openDropdown = this.container?.querySelector(".library-picker-menu:not([hidden])");
+        if (!openDropdown) return true;
+        const options = Array.from(openDropdown.querySelectorAll(".library-picker-option"));
+        const currentIndex = options.findIndex((c) => c === focusedNode);
+        if (currentIndex >= 0) {
+          if (keyCode === 13 || keyCode === 32) {
+            event.preventDefault();
+            options[currentIndex].click();
+            return true;
+          }
+          if (keyCode === 40) {
+            event.preventDefault();
+            const nextIndex = Math.min(options.length - 1, currentIndex + 1);
+            options[nextIndex]?.focus();
+            return true;
+          }
+          if (keyCode === 38) {
+            event.preventDefault();
+            const prevIndex = Math.max(0, currentIndex - 1);
+            options[prevIndex]?.focus();
+            return true;
+          }
+          if (keyCode === 27) {
+            event.preventDefault();
+            categoryAnchor?.click();
+            categoryAnchor?.focus();
+            return true;
+          }
+        }
       }
 
       // Handle Enter/Space on channel cards for play

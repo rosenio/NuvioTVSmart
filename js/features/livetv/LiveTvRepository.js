@@ -585,15 +585,6 @@ async function refreshChannels(signature, signal) {
     (ch, i, arr) => arr.findIndex((c) => c.streamUrl === ch.streamUrl) === i
   );
 
-  // Limit channels for performance on low-end TVs
-  const MAX_CHANNELS = 50;
-  const limitedChannels = fetchedChannels.slice(0, MAX_CHANNELS);
-  if (fetchedChannels.length > MAX_CHANNELS) {
-    console.warn(
-      `[LiveTvRepository] Limiting channels from ${fetchedChannels.length} to ${MAX_CHANNELS}`
-    );
-  }
-
   const previousChannels = _uiState.channels;
 
   // Keep previous if fetch failed but we had cached channels
@@ -603,7 +594,7 @@ async function refreshChannels(signature, signal) {
     previousChannels.length > 0 &&
     _channelsSignature === signature;
 
-  const channels = keepPrevious ? previousChannels : limitedChannels;
+  const channels = keepPrevious ? previousChannels : fetchedChannels;
 
   let errorMessage = null;
   if (channels.length === 0 && failedPlaylistNames.length > 0) {

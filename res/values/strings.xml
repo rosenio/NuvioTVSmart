@@ -3279,4 +3279,31 @@
     <string name="mdblist_last_synced">Last synced %1$s</string>
     <string name="sub_strip_sdh">Strip SDH subtitles</string>
     <string name="sub_strip_sdh_desc">Hide sound descriptions and speaker labels from text subtitles</string>
+
+    <!-- Live TV -->
+    <string name="live_tv_title">Live TV</string>
+    <string name="live_tv_channels">Channels</string>
+    <string name="live_tv_search_placeholder">Search channels...</string>
+    <string name="live_tv_filter_label">Filter channels</string>
+    <string name="live_tv_group_all_channels">All Channels</string>
+    <string name="live_tv_filter_favorites">Favorites</string>
+    <string name="live_tv_group_uncategorized">Uncategorized</string>
+    <string name="live_tv_filter_choose_category">Choose Category</string>
+    <string name="live_tv_add_favorite">Add to favorites</string>
+    <string name="live_tv_remove_favorite">Remove from favorites</string>
+    <string name="live_tv_button_play">Play</string>
+    <string name="live_tv_button_continue">Continue Watching</string>
+    <string name="live_tv_empty_title">No channels</string>
+    <string name="live_tv_empty_message">No channels available</string>
+    <string name="live_tv_no_playlist_title">No playlist configured</string>
+    <string name="live_tv_no_playlist_message">Add a playlist in Settings to get started</string>
+    <string name="live_tv_no_matching_channels_title">No matching channels</string>
+    <string name="live_tv_no_matching_channels_message">Try a different search or filter</string>
+    <string name="live_tv_error_message">Failed to load channels</string>
+    <string name="live_tv_load_failed">Failed to load channels</string>
+    <string name="live_tv_loading">Loading...</string>
+    <string name="live_tv_loading_more">Loading more channels...</string>
+    <string name="live_tv_last_watched_title">Last Watched</string>
+    <string name="live_tv_epg_now">Now</string>
+    <string name="live_tv_epg_next">Next</string>
 </resources>

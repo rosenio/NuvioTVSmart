@@ -18,12 +18,21 @@ export function createLiveTvScreenMethods08() {
         this.focusZone = "content";
         this.sidebarFocusIndex = 0;
         this.searchQuery = "";
-        this.filterMode = "all";
+        this.filterMode = "favorites"; // Start with favorites view
+        this.selectedCategoryName = null;
+        this.categoryDropdownOpen = false;
+        this._focusChannelListAfterRender = false;
+        console.log("[DEBUG mount] filterMode set to:", this.filterMode);
         this.selectedCategoryName = null;
         this.visibleChannels = [];
         this.lastWatchedChannel = null;
         this.isMounted = true;
         this.routeStateKey = this.getRouteStateKey();
+
+        // Chunked/incremental rendering for large channel lists
+        this.CHUNK_SIZE = 100;
+        this.renderedChunkCount = 0;
+        this._isRenderingChunk = false;
 
         console.log("[LiveTvScreen] calling loadData()");
         await this.loadData();

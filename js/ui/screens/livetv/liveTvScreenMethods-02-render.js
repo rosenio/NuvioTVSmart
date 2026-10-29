@@ -73,7 +73,19 @@ export function createLiveTvScreenMethods02() {
       this.buildNavModel();
 
       // Restore focus using new navigation system
-      if (this.navModel?.rows?.[0]?.[0]) {
+      if (this._focusChannelListAfterRender) {
+        this._focusChannelListAfterRender = false;
+        // Channel cards are now row 2
+        if (this.navModel?.rows?.[2]?.[0]) {
+          this.focusNode(null, this.navModel.rows[2][0]);
+        }
+      } else if (this.categoryDropdownOpen && this.navModel?.rows?.[4]?.[0]) {
+        // Dropdown is open, focus first option (now row 4)
+        this.focusNode(null, this.navModel.rows[4][0]);
+      } else if (this.lastMainFocus && this.container.contains(this.lastMainFocus)) {
+        this.lastMainFocus.focus({ preventScroll: true });
+      } else if (this.navModel?.rows?.[0]?.[0]) {
+        // Focus first row (recent channels or filter bar)
         this.focusNode(null, this.navModel.rows[0][0]);
       }
     },
@@ -124,6 +136,7 @@ export function createLiveTvScreenMethods02() {
       }
 
       return `
+        ${this.renderLastWatched(state)}
         <div class="livetv-controls-sticky">
           ${this.renderChannelControls(state)}
         </div>
@@ -151,23 +164,28 @@ export function createLiveTvScreenMethods02() {
       const chooseCategoryLabel = I18n.t("live_tv_filter_choose_category", {}, "Choose Category");
 
       return `
-        <div class="livetv-search-wrapper">
-          <input type="search" class="livetv-search-input focusable" placeholder="${I18n.t("live_tv_search_placeholder", {}, "Search channels...")}" value="${this.searchQuery || ""}" aria-label="${I18n.t("live_tv_search_placeholder", {}, "Search channels")}">
-          ${this.searchQuery ? `<button class="livetv-search-clear focusable" data-action="clear-search" aria-label="${I18n.t("action_clear", {}, "Clear")}">✕</button>` : ""}
+        <div class="livetv-search-wrapper library-cloud-toolbar">
+          <label class="library-cloud-search-shell">
+            <span>${I18n.t("live_tv_search_placeholder", {}, "Search channels")}</span>
+            <input type="search" class="library-cloud-search-input focusable" placeholder="${I18n.t("live_tv_search_placeholder", {}, "Search channels...")}" value="${this.searchQuery || ""}" aria-label="${I18n.t("live_tv_search_placeholder", {}, "Search channels")}" data-action="live-tv-search">
+            ${this.searchQuery ? `<button class="livetv-search-clear focusable" data-action="clear-search" aria-label="${I18n.t("action_clear", {}, "Clear")}">✕</button>` : ""}
+          </label>
         </div>
-        <div class="livetv-filter-bar" role="group" aria-label="${I18n.t("live_tv_filter_label", {}, "Filter channels")}">
-          <button class="livetv-filter-chip${this.filterMode === "all" ? " selected" : ""} focusable" data-filter="all" data-action="filter-all">${allLabel}</button>
-          <button class="livetv-filter-chip${this.filterMode === "favorites" ? " selected" : ""} focusable" data-filter="favorites" data-action="filter-favorites">${favoritesLabel}</button>
-          <div class="livetv-category-dropdown">
-            <button class="livetv-filter-chip${this.filterMode === "category" ? " selected" : ""} focusable" data-action="toggle-category-dropdown" aria-expanded="${this.filterMode === "category"}" aria-haspopup="listbox">
-              ${this.filterMode === "category" && this.selectedCategoryName ? this.selectedCategoryName : chooseCategoryLabel}
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        <div class="livetv-filter-bar library-view-mode-row" role="group" aria-label="${I18n.t("live_tv_filter_label", {}, "Filter channels")}">
+          <button class="library-view-mode-button focusable${this.filterMode === "favorites" ? " selected" : ""}" data-filter="favorites" data-action="filter-favorites">${favoritesLabel}</button>
+          <div class="livetv-category-picker library-picker library-picker-flex" style="flex: 1 1 0; min-width: 0;">
+            <button class="library-picker-anchor focusable${this.filterMode === "category" ? " open" : ""}" data-action="toggle-category-dropdown" aria-expanded="${this.filterMode === "category"}" aria-haspopup="listbox" aria-label="${chooseCategoryLabel}">
+              <div class="library-picker-copy">
+                <span class="library-picker-title">${chooseCategoryLabel}</span>
+                <span class="library-picker-value">${this.filterMode === "category" && this.selectedCategoryName ? this.selectedCategoryName : chooseCategoryLabel}</span>
+              </div>
+              <svg class="library-picker-chevron" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
             </button>
-            <div class="livetv-category-dropdown-menu" role="listbox" aria-label="${chooseCategoryLabel}" hidden>
+            <div class="library-picker-menu livetv-category-dropdown-menu${this.categoryDropdownOpen ? " library-picker-menu-open" : ""}" role="listbox" aria-label="${chooseCategoryLabel}" ${!this.categoryDropdownOpen ? "hidden" : ""}>
               ${categories
                 .map(
                   (cat) => `
-                <button class="livetv-category-option focusable" role="option" data-category="${cat.categoryName}" data-action="filter-category" ${cat.categoryName === this.selectedCategoryName ? 'aria-selected="true"' : ""}>
+                <button class="library-picker-option focusable" role="option" data-category="${cat.categoryName}" data-action="filter-category" ${cat.categoryName === this.selectedCategoryName ? 'aria-selected="true"' : ""}>
                   ${cat.label}
                 </button>
               `
@@ -182,84 +200,45 @@ export function createLiveTvScreenMethods02() {
 
     buildCategoryOptions(state) {
       const allLabel = I18n.t("live_tv_group_all_channels", {}, "All Channels");
-      const favoritesLabel = I18n.t("live_tv_filter_favorites", {}, "Favorites");
       const uncategorizedLabel = I18n.t("live_tv_group_uncategorized", {}, "Uncategorized");
 
-      const categories = state.channels
-        .map((ch) => ch.group?.trim())
-        .filter(Boolean)
+      const rawGroups = state.channels.map((ch) => ch.group?.trim()).filter(Boolean);
+
+      const categories = rawGroups
         .filter((v, i, a) => a.indexOf(v) === i)
-        .filter((cat) => ![allLabel, favoritesLabel, uncategorizedLabel].some((l) => l.equalsIgnoreCase(cat)))
+        .filter((cat) => cat.toLowerCase() !== uncategorizedLabel.toLowerCase())
         .sort((a, b) => a.localeCompare(b));
 
-      const options = [
-        { label: allLabel, mode: "all", categoryName: null },
-        { label: favoritesLabel, mode: "favorites", categoryName: null },
-        { label: uncategorizedLabel, mode: "category", categoryName: uncategorizedLabel }
-      ];
+      // Add "All Channels" and "Uncategorized" to the list
+      const allCategories = [allLabel, ...categories];
+      if (!allCategories.some((c) => c.toLowerCase() === uncategorizedLabel.toLowerCase())) {
+        allCategories.push(uncategorizedLabel);
+      }
 
-      categories.forEach((cat) => {
-        options.push({ label: cat, mode: "category", categoryName: cat });
-      });
-
-      return options;
+      return allCategories.map((cat) => ({
+        categoryName: cat,
+        label: cat,
+        isAll: cat === allLabel,
+        isUncategorized: cat === uncategorizedLabel
+      }));
     },
 
     renderChannelList(state) {
       this.visibleChannels = this.filterChannels(state.channels, state.favoriteChannelIds);
       this.lastWatchedChannel = state.lastWatchedChannelId ? state.channels.find((ch) => ch.id === state.lastWatchedChannelId) : null;
+      const renderedChannels = this.getRenderedChannels();
 
-      let html = "";
+      let html = renderedChannels.map((channel) => this.renderChannelCard(channel, state)).join("");
 
-      if (this.lastWatchedChannel) {
-        const categoryName = this.getCategoryName(this.lastWatchedChannel, I18n.t("live_tv_group_uncategorized", {}, "Uncategorized"));
-        const programs = state.epgPrograms[this.lastWatchedChannel.id] || [];
-        const nowMillis = Date.now();
-        const currentProgram = programs.find((p) => p.startMillis <= nowMillis && p.endMillis > nowMillis);
-        const nextProgram = programs.find((p) => p.startMillis > nowMillis);
-
+      // Add "load more" indicator if there are more channels
+      if (this.hasMoreChannels()) {
+        const remaining = this.visibleChannels.length - renderedChannels.length;
         html += `
-          <div class="livetv-recent-channel focusable" data-channel-id="${this.lastWatchedChannel.id}" data-action="play-recent" role="listitem" style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; min-height: 72px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 16px;">
-            <div class="livetv-recent-logo" aria-hidden="true" style="flex: 0 0 56px; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;">
-              <img src="${this.lastWatchedChannel.logoUrl || ""}" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDN2MTAuNTVjLS41OS0uMzQtMS4yNy0uNTUtMi0uNTUtMi4yMSAwLTQgMS43OS00IDRzMS43OSA0IDQgNCA0LTEuNzkgNC00VjdoNHYtNmgtNnoiIGZpbGw9IiM2NjYiLz48L3N2Zz4='" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-            <div class="livetv-recent-info" style="flex: 1; min-width: 0;">
-              <span class="livetv-recent-label">${I18n.t("live_tv_last_watched_title", {}, "Last Watched")}</span>
-              <h3 class="livetv-recent-name">${this.lastWatchedChannel.name}</h3>
-              <span class="livetv-recent-category">${categoryName}</span>
-              ${
-                currentProgram
-                  ? `
-                <div class="livetv-epg-now-next">
-                  <div class="livetv-epg-now">
-                    <span class="livetv-epg-now-label">${I18n.t("live_tv_epg_now", {}, "Now")}</span>
-                    <span class="livetv-epg-now-title">${currentProgram.title}</span>
-                    <div class="livetv-epg-progress" style="--progress: ${(((nowMillis - currentProgram.startMillis) / (currentProgram.endMillis - currentProgram.startMillis)) * 100).toFixed(1)}%"></div>
-                  </div>
-                  ${
-                    nextProgram
-                      ? `
-                    <div class="livetv-epg-next">
-                      <span class="livetv-epg-next-label">${I18n.t("live_tv_epg_next", {}, "Next")}</span>
-                      <span class="livetv-epg-next-time">${this.formatEpgTime(nextProgram.startMillis)}</span>
-                      <span class="livetv-epg-next-title">${nextProgram.title}</span>
-                    </div>
-                  `
-                      : ""
-                  }
-                </div>
-              `
-                  : ""
-              }
-            </div>
-            <button class="livetv-recent-play focusable" data-action="play-recent" aria-label="${I18n.t("live_tv_button_continue", {}, "Continue Watching")}" style="flex: 0 0 44px; width: 44px; height: 44px; border: none; background: #4ade80; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0f0f23; transition: all 0.2s;">
-              <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px; margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
-            </button>
+          <div class="livetv-load-more" style="padding: 16px; text-align: center; color: var(--text-tertiary); font-size: 14px;">
+            ${I18n.t("live_tv_loading_more", {}, "Loading more channels...")} (${remaining} remaining)
           </div>
         `;
       }
-
-      html += this.visibleChannels.map((channel) => this.renderChannelCard(channel, state)).join("");
       return html;
     },
 
@@ -334,6 +313,135 @@ export function createLiveTvScreenMethods02() {
         .sort((a, b) => a.name.localeCompare(b.name));
     },
 
+    resetChunkedRendering() {
+      this.renderedChunkCount = 0;
+      this._isRenderingChunk = false;
+    },
+
+    getRenderedChannels() {
+      if (!this.visibleChannels || this.visibleChannels.length === 0) return [];
+      // Always render first chunk on initial load
+      if (this.renderedChunkCount === 0) {
+        this.renderedChunkCount = 1;
+      }
+      const endIndex = Math.min(this.renderedChunkCount * this.CHUNK_SIZE, this.visibleChannels.length);
+      return this.visibleChannels.slice(0, endIndex);
+    },
+
+    hasMoreChannels() {
+      return this.renderedChunkCount * this.CHUNK_SIZE < this.visibleChannels.length;
+    },
+
+    appendNextChunk() {
+      if (this._isRenderingChunk || !this.hasMoreChannels()) return false;
+      this._isRenderingChunk = true;
+      this.renderedChunkCount++;
+      this._isRenderingChunk = false;
+      return true;
+    },
+
+    maybeAppendChunkOnFocus(focusedIndex) {
+      // If focused near end of rendered channels, append next chunk
+      const renderedCount = this.renderedChunkCount * this.CHUNK_SIZE;
+      const threshold = Math.min(20, renderedCount); // trigger when within 20 items of end
+      if (focusedIndex >= renderedCount - threshold && this.hasMoreChannels()) {
+        this.appendNextChunk();
+        this.renderChannelListOnly();
+        return true;
+      }
+      return false;
+    },
+
+    renderChannelListOnly() {
+      if (!this.container || !this.isMounted) return;
+      const listContainer = this.container.querySelector(".livetv-channel-list");
+      if (!listContainer) return;
+
+      const state = LiveTvRepository.getUiState();
+      // Re-render using the same renderChannelList logic (chunked)
+      const renderedChannels = this.getRenderedChannels();
+      const lastWatchedHtml = this.lastWatchedChannel
+        ? this.renderLastWatchedChannel(this.lastWatchedChannel, state)
+        : "";
+      let html = lastWatchedHtml + renderedChannels.map((channel) => this.renderChannelCard(channel, state)).join("");
+
+      if (this.hasMoreChannels()) {
+        const remaining = this.visibleChannels.length - renderedChannels.length;
+        html += `
+          <div class="livetv-load-more" style="padding: 16px; text-align: center; color: var(--text-tertiary); font-size: 14px;">
+            ${I18n.t("live_tv_loading_more", {}, "Loading more channels...")} (${remaining} remaining)
+          </div>
+        `;
+      }
+
+      listContainer.innerHTML = html;
+      this.bindChannelCards();
+      this.buildNavModel();
+      ScreenUtils.indexFocusables(this.container);
+
+      if (this.lastMainFocus && this.container.contains(this.lastMainFocus)) {
+        this.lastMainFocus.focus({ preventScroll: true });
+      } else if (this.navModel?.rows?.[1]?.[0]) {
+        this.focusNode(null, this.navModel.rows[1][0]);
+      }
+    },
+
+    renderLastWatched(state) {
+      this.lastWatchedChannel = state.lastWatchedChannelId
+        ? state.channels.find((ch) => ch.id === state.lastWatchedChannelId)
+        : null;
+      if (!this.lastWatchedChannel) return "";
+      return `<div class="livetv-last-watched-section">${this.renderLastWatchedChannel(this.lastWatchedChannel, state)}</div>`;
+    },
+
+    renderLastWatchedChannel(channel, state) {
+      const categoryName = this.getCategoryName(channel, I18n.t("live_tv_group_uncategorized", {}, "Uncategorized"));
+      const programs = state.epgPrograms[channel.id] || [];
+      const nowMillis = Date.now();
+      const currentProgram = programs.find((p) => p.startMillis <= nowMillis && p.endMillis > nowMillis);
+      const nextProgram = programs.find((p) => p.startMillis > nowMillis);
+
+      return `
+        <div class="livetv-recent-channel focusable" data-channel-id="${channel.id}" data-action="play-recent" role="listitem" style="display: flex; align-items: center; gap: 16px; padding: 12px 16px; min-height: 72px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 16px;">
+          <div class="livetv-recent-logo" aria-hidden="true" style="flex: 0 0 56px; width: 56px; height: 56px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;">
+            <img src="${channel.logoUrl || ""}" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDN2MTAuNTVjLS41OS0uMzQtMS4yNy0uNTUtMi0uNTUtMi4yMSAwLTQgMS43OS00IDRzMS43OSA0IDQgNCA0LTEuNzkgNC00VjdoNHYtNmgtNnoiIGZpbGw9IiM2NjYiLz48L3N2Zz4='" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="livetv-recent-info" style="flex: 1; min-width: 0;">
+            <span class="livetv-recent-label">${I18n.t("live_tv_last_watched_title", {}, "Last Watched")}</span>
+            <h3 class="livetv-recent-name">${channel.name}</h3>
+            <span class="livetv-recent-category">${categoryName}</span>
+            ${
+              currentProgram
+                ? `
+              <div class="livetv-epg-now-next">
+                <div class="livetv-epg-now">
+                  <span class="livetv-epg-now-label">${I18n.t("live_tv_epg_now", {}, "Now")}</span>
+                  <span class="livetv-epg-now-title">${currentProgram.title}</span>
+                  <div class="livetv-epg-progress" style="--progress: ${(((nowMillis - currentProgram.startMillis) / (currentProgram.endMillis - currentProgram.startMillis)) * 100).toFixed(1)}%"></div>
+                </div>
+                ${
+                  nextProgram
+                    ? `
+                  <div class="livetv-epg-next">
+                    <span class="livetv-epg-next-label">${I18n.t("live_tv_epg_next", {}, "Next")}</span>
+                    <span class="livetv-epg-next-time">${this.formatEpgTime(nextProgram.startMillis)}</span>
+                    <span class="livetv-epg-next-title">${nextProgram.title}</span>
+                  </div>
+                `
+                    : ""
+                }
+              </div>
+            `
+                : ""
+            }
+          </div>
+          <button class="livetv-recent-play focusable" data-action="play-recent" aria-label="${I18n.t("live_tv_button_continue", {}, "Continue Watching")}" style="flex: 0 0 44px; width: 44px; height: 44px; border: none; background: #4ade80; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0f0f23; transition: all 0.2s;">
+            <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px; margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      `;
+    },
+
     getCategoryName(channel, uncategorizedLabel) {
       return channel.group?.trim() || uncategorizedLabel;
     },
@@ -374,46 +482,64 @@ export function createLiveTvScreenMethods02() {
       });
 
       // Filter buttons
-      this.container.querySelectorAll('[data-action="filter-all"]').forEach((btn) => {
-        btn.onclick = () => {
-          this.filterMode = "all";
-          this.selectedCategoryName = null;
-          this.render();
-        };
-      });
       this.container.querySelectorAll('[data-action="filter-favorites"]').forEach((btn) => {
         btn.onclick = () => {
           this.filterMode = "favorites";
           this.selectedCategoryName = null;
+          this.categoryDropdownOpen = false;
+          this.resetChunkedRendering();
+          this._focusChannelListAfterRender = true;
           this.render();
         };
       });
       this.container.querySelectorAll('[data-action="toggle-category-dropdown"]').forEach((btn) => {
         btn.onclick = () => {
-          const menu = btn.nextElementSibling;
-          const expanded = (menu.hidden = !menu.hidden);
-          btn.setAttribute("aria-expanded", expanded);
-          this.render(); // Rebuild nav model with dropdown options
+          this.categoryDropdownOpen = !this.categoryDropdownOpen;
+          if (this.categoryDropdownOpen) {
+            this.filterMode = "category";
+          } else if (this.filterMode === "category" && !this.selectedCategoryName) {
+            // Closed without selecting a category - reset filter
+            this.filterMode = "favorites";
+          }
+          btn.setAttribute("aria-expanded", this.categoryDropdownOpen);
+          this.render();
         };
       });
       this.container.querySelectorAll('[data-action="filter-category"]').forEach((btn) => {
         btn.onclick = () => {
-          this.filterMode = "category";
-          this.selectedCategoryName = btn.dataset.category;
+          const cat = btn.dataset.category;
+          const allLabel = I18n.t("live_tv_group_all_channels", {}, "All Channels");
+          const uncategorizedLabel = I18n.t("live_tv_group_uncategorized", {}, "Uncategorized");
+
+          if (cat === allLabel) {
+            this.filterMode = "favorites";
+            this.selectedCategoryName = null;
+          } else if (cat === uncategorizedLabel) {
+            this.filterMode = "category";
+            this.selectedCategoryName = uncategorizedLabel;
+          } else {
+            this.filterMode = "category";
+            this.selectedCategoryName = cat;
+          }
+          this.categoryDropdownOpen = false;
+          this.resetChunkedRendering();
+          this._focusChannelListAfterRender = true;
           this.render();
         };
       });
 
       // Search
-      const searchInput = this.container.querySelector(".livetv-search-input");
+      const searchInput = this.container.querySelector(".library-cloud-search-input");
       if (searchInput) {
         searchInput.oninput = (e) => {
           this.searchQuery = e.target.value;
+          this.resetChunkedRendering();
           this.render();
         };
         searchInput.onkeydown = (e) => {
           if (e.key === "Escape") {
             this.searchQuery = "";
+            this.resetChunkedRendering();
             this.render();
           }
         };
@@ -421,6 +547,7 @@ export function createLiveTvScreenMethods02() {
       this.container.querySelectorAll('[data-action="clear-search"]').forEach((btn) => {
         btn.onclick = () => {
           this.searchQuery = "";
+          this.resetChunkedRendering();
           this.render();
         };
       });

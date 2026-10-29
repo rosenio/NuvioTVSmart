@@ -35,17 +35,22 @@ export function createLiveTvScreenMethods06() {
       if (focusZone === "sidebar") {
         return Array.from(this.container.querySelectorAll(".home-sidebar .focusable, .modern-sidebar-panel .focusable"));
       }
-      // Content focus: exclude sidebar elements, prioritize channel cards
+      // Content focus: exclude sidebar elements, prioritize filter bar first, then channel cards
       const contentRoot = this.container.querySelector(".livetv-content") || this.container;
-      const channelCards = Array.from(contentRoot.querySelectorAll(".livetv-channel-card"));
-      const recentChannels = Array.from(contentRoot.querySelectorAll(".livetv-recent-channel"));
-      const otherFocusables = Array.from(
+      const filterFocusables = Array.from(
         contentRoot.querySelectorAll(
-          '.livetv-favorite-btn, .livetv-play-btn, .livetv-recent-play, .livetv-filter-chip, .livetv-search-input, [data-action="refresh"]:not(.home-nav-item), [data-action="gotoSettings"]:not(.home-nav-item)'
+          '.library-view-mode-button, .library-picker-anchor, .library-cloud-search-input, [data-action="refresh"]:not(.home-nav-item), [data-action="gotoSettings"]:not(.home-nav-item), [data-action="clear-search"], [data-action="live-tv-search"]'
         )
       );
-      // Main channel cards first, then recent, then others
-      return [...channelCards, ...recentChannels, ...otherFocusables];
+      const channelCards = Array.from(contentRoot.querySelectorAll(".livetv-channel-card"));
+      const recentChannels = Array.from(contentRoot.querySelectorAll(".livetv-recent-channel"));
+      const actionFocusables = Array.from(
+        contentRoot.querySelectorAll(
+          '.livetv-favorite-btn, .livetv-play-btn, .livetv-recent-play, .library-picker-option, [data-action="filter-all"], [data-action="filter-favorites"], [data-action="filter-category"], [data-action="toggle-category-dropdown"]'
+        )
+      );
+      // Filter bar first, then channel cards, then action buttons
+      return [...filterFocusables, ...channelCards, ...recentChannels, ...actionFocusables];
     },
 
     focusSidebarNode() {

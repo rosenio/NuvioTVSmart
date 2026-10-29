@@ -29,7 +29,7 @@ export function createLiveTvScreenMethods04() {
       }
 
       // Handle search input
-      const searchInput = this.container?.querySelector(".livetv-search-input");
+      const searchInput = this.container?.querySelector(".library-cloud-search-input, .livetv-search-input");
       if (searchInput && searchInput === focusedNode) {
         if (keyCode === 27) {
           // Escape
@@ -41,8 +41,8 @@ export function createLiveTvScreenMethods04() {
         return false; // Let input handle other keys
       }
 
-      // Handle category dropdown
-      const dropdownOpen = this.container?.querySelector(".livetv-category-dropdown-menu:not([hidden])");
+      // Handle category dropdown (new library-style)
+      const dropdownOpen = this.container?.querySelector(".livetv-category-dropdown-menu:not([hidden]), .library-picker-menu:not([hidden])");
       if (dropdownOpen) {
         if (keyCode === 27) {
           // Escape
@@ -56,7 +56,7 @@ export function createLiveTvScreenMethods04() {
         if (keyCode === 40 || keyCode === 38) {
           // Down/Up
           event.preventDefault();
-          const options = dropdownOpen.querySelectorAll(".livetv-category-option");
+          const options = dropdownOpen.querySelectorAll(".livetv-category-option, .library-picker-option");
           const currentIndex = Array.from(options).findIndex((o) => o === focusedNode);
           let nextIndex = currentIndex;
           if (keyCode === 40) nextIndex = Math.min(options.length - 1, currentIndex + 1);
@@ -84,6 +84,8 @@ export function createLiveTvScreenMethods04() {
             event.preventDefault();
             const nextIndex = Math.min(channelCards.length - 1, currentIndex + 1);
             channelCards[nextIndex]?.focus();
+            // Check if we need to append more channels
+            this.maybeAppendChunkOnFocus(nextIndex);
             return true;
           }
           if (keyCode === 38) {
@@ -139,23 +141,83 @@ export function createLiveTvScreenMethods04() {
         }
       }
 
-      // Handle filter chips
-      const filterChips = this.container?.querySelectorAll(".livetv-filter-chip");
-      if (filterChips.length > 0) {
-        const currentIndex = Array.from(filterChips).findIndex((c) => c === focusedNode);
+      // Handle filter view mode buttons (library style)
+      const filterButtons = this.container?.querySelectorAll(".library-view-mode-button");
+      if (filterButtons.length > 0) {
+        const currentIndex = Array.from(filterButtons).findIndex((c) => c === focusedNode);
         if (currentIndex >= 0) {
           if (keyCode === 39) {
             // Right
             event.preventDefault();
-            const nextIndex = Math.min(filterChips.length - 1, currentIndex + 1);
-            filterChips[nextIndex]?.focus();
+            const nextIndex = Math.min(filterButtons.length - 1, currentIndex + 1);
+            filterButtons[nextIndex]?.focus();
             return true;
           }
           if (keyCode === 37) {
             // Left
             event.preventDefault();
             const prevIndex = Math.max(0, currentIndex - 1);
-            filterChips[prevIndex]?.focus();
+            filterButtons[prevIndex]?.focus();
+            return true;
+          }
+        }
+      }
+
+      // Handle category picker anchor
+      const categoryAnchor = this.container?.querySelector(".library-picker-anchor[data-action='toggle-category-dropdown']");
+      if (categoryAnchor && categoryAnchor === focusedNode) {
+        if (keyCode === 13 || keyCode === 32) {
+          // Enter/Space - toggle dropdown
+          event.preventDefault();
+          categoryAnchor.click();
+          return true;
+        }
+        if (keyCode === 39) {
+          // Right - go to channel count or search
+          event.preventDefault();
+          const nextFocusable = this.container?.querySelector(".library-cloud-search-input");
+          nextFocusable?.focus();
+          return true;
+        }
+        if (keyCode === 40 || keyCode === 38) {
+          // Down/Up - open dropdown
+          event.preventDefault();
+          categoryAnchor.click();
+          return true;
+        }
+      }
+
+      // Handle dropdown options when open
+      const openDropdown = this.container?.querySelector(".library-picker-menu:not([hidden])");
+      if (openDropdown) {
+        const options = Array.from(openDropdown.querySelectorAll(".library-picker-option"));
+        const currentIndex = options.findIndex((c) => c === focusedNode);
+        if (currentIndex >= 0) {
+          if (keyCode === 13 || keyCode === 32) {
+            // Enter/Space - select category
+            event.preventDefault();
+            options[currentIndex].click();
+            return true;
+          }
+          if (keyCode === 40) {
+            // Down
+            event.preventDefault();
+            const nextIndex = Math.min(options.length - 1, currentIndex + 1);
+            options[nextIndex]?.focus();
+            return true;
+          }
+          if (keyCode === 38) {
+            // Up
+            event.preventDefault();
+            const prevIndex = Math.max(0, currentIndex - 1);
+            options[prevIndex]?.focus();
+            return true;
+          }
+          if (keyCode === 27) {
+            // Escape - close dropdown
+            event.preventDefault();
+            categoryAnchor?.click();
+            categoryAnchor?.focus();
             return true;
           }
         }

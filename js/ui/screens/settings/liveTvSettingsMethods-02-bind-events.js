@@ -20,22 +20,6 @@ export function createLiveTvSettingsMethods02() {
         };
       });
 
-      // Xtream enabled toggle
-      container.querySelectorAll('[data-setting="xtreamEnabled"]').forEach((input) => {
-        input.onchange = (e) => {
-          const settings = LiveTvRepository.getUiState().xtreamSettings;
-          LiveTvRepository.saveXtreamSettings({ ...settings, isEnabled: e.target.checked });
-        };
-      });
-
-      // Stalker enabled toggle
-      container.querySelectorAll('[data-setting="stalkerEnabled"]').forEach((input) => {
-        input.onchange = (e) => {
-          const settings = LiveTvRepository.getUiState().stalkerSettings;
-          LiveTvRepository.saveStalkerSettings({ ...settings, isEnabled: e.target.checked });
-        };
-      });
-
       // Add playlist URL
       container.querySelectorAll('[data-action="add-playlist-url"]').forEach((btn) => {
         btn.onclick = () => this.showAddPlaylistUrlDialog();
@@ -97,54 +81,6 @@ export function createLiveTvSettingsMethods02() {
             I18n.t("settings_livetv_remove_epg_source", {}, "Remove EPG source"),
             I18n.t("settings_livetv_remove_epg_source_confirm", {}, "Are you sure you want to remove this EPG source?"),
             () => LiveTvRepository.removeEpgSource(sourceId)
-          );
-        };
-      });
-
-      // Save Xtream
-      container.querySelectorAll('[data-action="save-xtream"]').forEach((btn) => {
-        btn.onclick = () => this.saveXtreamSettings();
-      });
-
-      // Edit Xtream
-      container.querySelectorAll('[data-action="edit-xtream"]').forEach((btn) => {
-        btn.onclick = () => {
-          const state = LiveTvRepository.getUiState();
-          this.showEditXtreamDialog(state.xtreamSettings);
-        };
-      });
-
-      // Remove Xtream
-      container.querySelectorAll('[data-action="remove-xtream"]').forEach((btn) => {
-        btn.onclick = () => {
-          this.showConfirmDialog(
-            I18n.t("settings_livetv_xtream_remove", {}, "Remove Xtream settings"),
-            I18n.t("settings_livetv_remove_xtream_confirm", {}, "Are you sure you want to remove Xtream Codes settings?"),
-            () => LiveTvRepository.removeXtream()
-          );
-        };
-      });
-
-      // Save Stalker
-      container.querySelectorAll('[data-action="save-stalker"]').forEach((btn) => {
-        btn.onclick = () => this.saveStalkerSettings();
-      });
-
-      // Edit Stalker
-      container.querySelectorAll('[data-action="edit-stalker"]').forEach((btn) => {
-        btn.onclick = () => {
-          const state = LiveTvRepository.getUiState();
-          this.showEditStalkerDialog(state.stalkerSettings);
-        };
-      });
-
-      // Remove Stalker
-      container.querySelectorAll('[data-action="remove-stalker"]').forEach((btn) => {
-        btn.onclick = () => {
-          this.showConfirmDialog(
-            I18n.t("settings_livetv_stalker_remove", {}, "Remove Stalker settings"),
-            I18n.t("settings_livetv_remove_stalker_confirm", {}, "Are you sure you want to remove Stalker Portal settings?"),
-            () => LiveTvRepository.removeStalker()
           );
         };
       });
