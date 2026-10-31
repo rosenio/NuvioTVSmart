@@ -1,4 +1,5 @@
 import { MediaServerRepository, isMediaServerBase } from "../mediaserver/mediaServerRepository.js";
+import { NuvioServiceRepository } from "../mediaserver/nuvioServiceRepository.js";
 import { safeApiCall } from "../../core/network/safeApiCall.js";
 import { selectCatalogEntries } from "../../core/util/catalogEntryMapper.js";
 import { CatalogApi } from "../remote/api/catalogApi.js";
@@ -32,6 +33,12 @@ class CatalogRepository {
         extraArgs,
         signal
       });
+    if (NuvioServiceRepository.isNuvioServiceBase(addonBaseUrl)) {
+      const connectionId = NuvioServiceRepository.parseBase(addonBaseUrl);
+      const connection = connectionId ? NuvioServiceRepository.connection(connectionId) : null;
+      if (!connection?.enabled) return { status: "error", message: "nuvio_service_unreachable" };
+      return NuvioServiceRepository.catalog({ connection, catalogId, type, skip, extraArgs, signal });
+    }
     const normalizedSkipStep = this.normalizeSkipStep(skipStep);
     const cacheKey = this.buildCacheKey({
       addonBaseUrl,

@@ -1,6 +1,7 @@
 import { safeApiCall } from "../../core/network/safeApiCall.js";
 import { addonRepository } from "./addonRepository.js";
 import { catalogRepository } from "./catalogRepository.js";
+import { NuvioServiceRepository } from "../mediaserver/nuvioServiceRepository.js";
 import { SubtitleApi } from "../remote/api/subtitleApi.js";
 
 const PER_ADDON_TIMEOUT_MS = 20000;
@@ -136,6 +137,25 @@ class SubtitleRepository {
   }
 
   async fetchSubtitlesFromAddon(addon, type, idCandidates = [], videoId, options = {}) {
+    if (NuvioServiceRepository.isNuvioServiceBase(addon.baseUrl)) {
+      const connectionId = NuvioServiceRepository.parseBase(addon.baseUrl);
+      const connection = connectionId ? NuvioServiceRepository.connection(connectionId) : null;
+      if (!connection?.enabled) return [];
+      try {
+        const result = await NuvioServiceRepository.subtitles({ connection, type, id: idCandidates[0] });
+        if (result.status !== "success") return [];
+        return (result.data || []).map((subtitle) => ({
+          id: subtitle.id || `${subtitle.language || "unk"}-${this.makeDeterministicId(subtitle.url || "")}`,
+          url: subtitle.url,
+          lang: subtitle.language || "unknown",
+          ...(subtitle.headers ? { headers: subtitle.headers } : {}),
+          addonName: connection.name,
+          addonLogo: null
+        })).filter((subtitle) => Boolean(subtitle.url));
+      } catch (_) {
+        return [];
+      }
+    }
     const candidateIds = this.buildActualIdCandidates(type, idCandidates, videoId, {
       ...options,
       idPrefixes: addon?.idPrefixes

@@ -1,4 +1,5 @@
 import { MediaServerRepository } from "../../../data/mediaserver/mediaServerRepository.js";
+import { NuvioServiceRepository } from "../../../data/mediaserver/nuvioServiceRepository.js";
 import { ProfileManager } from "../../../core/profile/profileManager.js";
 import { I18n } from "../../../i18n/index.js";
 const t = (key, params = []) => I18n.t(key, params, { fallback: key });
@@ -43,28 +44,35 @@ export function renderMediaServersSection() {
         title: t("settings_media_servers"),
         options: [
           { id: "jellyfin", label: "Jellyfin" },
-          { id: "emby", label: "Emby" }
+          { id: "emby", label: "Emby" },
+          { id: "nuvio-service", label: "Nuvio Service" }
         ],
         selectedId: draft.providerId,
         returnFocusKey: "mediaServers:provider",
         onSelect: (option) => {
           draft.providerId = option.id;
+          if (option.id === "nuvio-service") {
+            draft.username = "";
+            draft.password = "";
+          }
         }
       })
     );
     body += this.renderActionRow({
       focusKey: "mediaServers:provider",
       title: t("settings_media_servers"),
-      value: draft.providerId === "emby" ? "Emby" : "Jellyfin"
+      value: draft.providerId === "emby" ? "Emby" : draft.providerId === "nuvio-service" ? "Nuvio Service" : "Jellyfin"
     });
-    for (const field of ["address", "username", "password"]) {
+    const isNuvioService = draft.providerId === "nuvio-service";
+    const fields = isNuvioService ? ["address"] : ["address", "username", "password"];
+    for (const field of fields) {
       this.actionMap.set(`mediaServers:${field}`, () =>
         this.openTextDialog({
           title: t(`servers_${field}`),
           value: draft[field],
           secret: field === "password",
           inputType: field === "address" ? "url" : "text",
-          placeholder: field === "address" ? t("servers_address_hint") : "",
+          placeholder: field === "address" ? (isNuvioService ? "192.168.1.100:11471" : t("servers_address_hint")) : "",
           returnFocusKey: `mediaServers:${field}`,
           onSubmit: (value) => {
             draft[field] = value;
@@ -82,19 +90,30 @@ export function renderMediaServersSection() {
       this.mediaServerConnecting = true;
       this.mediaServerError = null;
       try {
-        const entry = await MediaServerRepository.connect({ ...draft });
-        if (current()) {
-          this.mediaServersView = entry.id;
-          this.mediaServerDraft = null;
+        if (isNuvioService) {
+          const [address, portStr] = (draft.address || "").split(":");
+          const port = portStr ? parseInt(portStr, 10) : 11471;
+          const entry = await NuvioServiceRepository.connect({ address, port, connectionId: draft.connectionId });
+          if (current()) {
+            this.mediaServersView = entry.id;
+            this.mediaServerDraft = null;
+          }
+        } else {
+          const entry = await MediaServerRepository.connect({ ...draft });
+          if (current()) {
+            this.mediaServersView = entry.id;
+            this.mediaServerDraft = null;
+          }
         }
       } catch (error) {
         if (!current()) return;
         this.mediaServerError = t(
-          error?.message?.startsWith("servers_") ? error.message : "servers_error_unreachable",
-          [
-            draft.providerId === "emby" ? "Emby" : "Jellyfin",
-            draft.providerId === "emby" ? "4.7" : "10.9"
-          ]
+          error?.message?.startsWith("servers_") || error?.message?.startsWith("nuvio_service_")
+            ? error.message
+            : isNuvioService
+            ? "nuvio_service_unreachable"
+            : "servers_error_unreachable",
+          isNuvioService ? [] : [draft.providerId === "emby" ? "Emby" : "Jellyfin", draft.providerId === "emby" ? "4.7" : "10.9"]
         );
       } finally {
         draft.password = "";
@@ -207,6 +226,18 @@ export function renderMediaServersSection() {
         title: entry.name,
         value: entry.providerId === "emby" ? "Emby" : "Jellyfin",
         subtitle: entry.userName
+      });
+    }
+    for (const entry of NuvioServiceRepository.connections()) {
+      const id = `mediaServers:open:nuvio:${entry.id}`;
+      this.actionMap.set(id, () => {
+        this.mediaServersView = `nuvio:${entry.id}`;
+      });
+      body += this.renderActionRow({
+        focusKey: id,
+        title: entry.name,
+        value: "Nuvio Service",
+        subtitle: `${entry.address}:${entry.port}`
       });
     }
     this.actionMap.set("mediaServers:add", () => {

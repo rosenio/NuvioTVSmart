@@ -1,4 +1,5 @@
 import { MediaServerRepository, isMediaServerBase } from "../mediaserver/mediaServerRepository.js";
+import { NuvioServiceRepository } from "../mediaserver/nuvioServiceRepository.js";
 import { safeApiCall } from "../../core/network/safeApiCall.js";
 import { addonRepository } from "./addonRepository.js";
 import { StreamApi } from "../remote/api/streamApi.js";
@@ -167,6 +168,19 @@ class StreamRepository {
   async getStreamsFromAddon(baseUrl, type, videoId, { signal = null } = {}) {
     if (isMediaServerBase(baseUrl))
       return MediaServerRepository.streams(baseUrl, type, videoId, signal);
+    if (NuvioServiceRepository.isNuvioServiceBase(baseUrl)) {
+      const connectionId = NuvioServiceRepository.parseBase(baseUrl);
+      const connection = connectionId ? NuvioServiceRepository.connection(connectionId) : null;
+      if (!connection?.enabled) return { status: "error", message: "nuvio_service_unreachable" };
+      try {
+        const result = await NuvioServiceRepository.streams({ connection, type, id: videoId, signal });
+        if (result.status !== "success") return result;
+        const streams = (result.data || []).map((stream) => this.mapStream(stream));
+        return { status: "success", data: streams };
+      } catch (_) {
+        return { status: "error", message: "nuvio_service_unreachable" };
+      }
+    }
     const url = this.buildStreamUrl(baseUrl, type, videoId);
     const result = await safeApiCall(() =>
       StreamApi.getStreams(url, { timeoutMs: STREAM_SOURCE_REQUEST_TIMEOUT_MS, signal })
