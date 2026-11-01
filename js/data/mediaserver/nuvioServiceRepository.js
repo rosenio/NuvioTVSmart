@@ -61,6 +61,18 @@ export const NuvioServiceRepository = {
       if (!healthResponse || healthResponse.status !== "ok") {
         throw new Error("nuvio_service_unhealthy");
       }
+
+      // Get streaming server URL from settings
+      let streamingServerUrl = null;
+      try {
+        const settingsResponse = await httpRequest(`${baseUrl}/settings`, {
+          includeSessionAuth: false,
+          timeoutMs: 5000
+        });
+        if (settingsResponse?.streaming_server_url) {
+          streamingServerUrl = settingsResponse.streaming_server_url;
+        }
+      } catch (_) {}
     } catch (error) {
       throw new Error("nuvio_service_unreachable");
     }
@@ -72,7 +84,8 @@ export const NuvioServiceRepository = {
       port,
       name: `Nuvio Service (${address}:${port})`,
       enabled: true,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      streamingServerUrl
     };
 
     const connections = getConnections();

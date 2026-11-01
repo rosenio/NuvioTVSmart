@@ -106,6 +106,8 @@ import { WebOsEngineFsResolver } from "../../../core/p2p/webosEngineFsResolver.j
 
 import { TizenStreamingServerResolver } from "../../../core/p2p/tizenStreamingServerResolver.js";
 
+import { NuvioServiceStreamingResolver } from "../../../core/p2p/nuvioServiceStreamingResolver.js";
+
 import { TizenEngineFsService } from "../../../platform/tizen/tizenEngineFsService.js";
 
 import { requestWebOsCompanionService, subscribeWebOsCompanionService } from "../../../platform/webos/webosCompanionService.js";
@@ -403,6 +405,7 @@ export {
   TrackingScrobbleService,
   WebOsEngineFsResolver,
   TizenStreamingServerResolver,
+  NuvioServiceStreamingResolver,
   TizenEngineFsService,
   requestWebOsCompanionService,
   subscribeWebOsCompanionService,

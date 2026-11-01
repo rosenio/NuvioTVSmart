@@ -2,6 +2,7 @@ import { MediaServerRepository } from "../../../data/mediaserver/mediaServerRepo
 import { NuvioServiceRepository } from "../../../data/mediaserver/nuvioServiceRepository.js";
 import { ProfileManager } from "../../../core/profile/profileManager.js";
 import { I18n } from "../../../i18n/index.js";
+import { canDiscoverNuvioService } from "../../../core/network/nuvioServiceDiscovery.js";
 const t = (key, params = []) => I18n.t(key, params, { fallback: key });
 export function renderMediaServersSection() {
   const pid = String(ProfileManager.getActiveProfileId());
@@ -19,7 +20,17 @@ export function renderMediaServersSection() {
     this.settingsMountToken === mount &&
     String(ProfileManager.getActiveProfileId()) === pid &&
     this.mediaServersView === view;
-  const connection = MediaServerRepository.connection(view);
+
+  // Resolve connection for both MediaServer and NuvioService
+  let connection = null;
+  let isNuvioServiceConnection = false;
+  if (view?.startsWith("nuvio:")) {
+    const connectionId = view.slice(6);
+    connection = NuvioServiceRepository.connection(connectionId);
+    isNuvioServiceConnection = true;
+  } else {
+    connection = MediaServerRepository.connection(view);
+  }
   const back = () => {
     this.mediaServerDraft = null;
     this.mediaServerError = null;
@@ -85,6 +96,46 @@ export function renderMediaServersSection() {
         value: field === "password" ? (draft.password ? "••••••" : "") : draft[field]
       });
     }
+    this.actionMap.set("mediaServers:discoverNuvioService", async () => {
+      if (!current()) return;
+      try {
+        const { discoverNuvioService, canDiscoverNuvioService } = await import(
+          "../../../core/network/nuvioServiceDiscovery.js"
+        );
+        if (!canDiscoverNuvioService()) {
+          this.mediaServerError = "mDNS discovery not supported on this platform";
+          return;
+        }
+        this.mediaServerError = "Discovering Nuvio Service...";
+        this.renderMediaServersSection();
+        const services = await discoverNuvioService({ timeoutMs: 8000 });
+        if (!current()) return;
+        if (services.length === 0) {
+          this.mediaServerError = "No Nuvio Service found on LAN";
+          this.renderMediaServersSection();
+          return;
+        }
+        // Use the first discovered service
+        const service = services[0];
+        draft.address = `${service.address}:${service.port}`;
+        if (service.streamingPort) {
+          draft.streamingServerPort = parseInt(service.streamingPort, 10);
+        }
+        this.mediaServerError = `Found: ${service.name} (${service.address}:${service.port})`;
+        this.renderMediaServersSection();
+      } catch (error) {
+        if (!current()) return;
+        this.mediaServerError = `Discovery failed: ${error?.message || error}`;
+        this.renderMediaServersSection();
+      }
+    });
+    if (isNuvioService && canDiscoverNuvioService()) {
+      body += this.renderActionRow({
+        focusKey: "mediaServers:discoverNuvioService",
+        title: "Discover on LAN (mDNS)",
+        icon: "🔍"
+      });
+    }
     this.actionMap.set("mediaServers:connect", async () => {
       if (!current() || this.mediaServerConnecting) return;
       this.mediaServerConnecting = true;
@@ -125,7 +176,89 @@ export function renderMediaServersSection() {
       title: t(this.mediaServerConnecting ? "servers_connecting" : "servers_connect"),
       disabled: this.mediaServerConnecting
     });
+  } else if (connection && isNuvioServiceConnection) {
+    body += `<h3>${this.escapeMediaServerText(connection.name)}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}</p>`;
+    for (const [field, label] of [
+      ["enabled", "servers_enabled"]
+    ]) {
+      this.actionMap.set(
+        `mediaServers:${field}`,
+        () =>
+          current() && NuvioServiceRepository.update(connection.id, { [field]: !connection[field] })
+      );
+      body += this.renderToggleRow({
+        focusKey: `mediaServers:${field}`,
+        title: t(label),
+        subtitle: t(`${label}_description`, [connection.name]),
+        checked: connection[field]
+      });
+    }
+    // Streaming server port configuration
+    this.actionMap.set("mediaServers:streamingPort", () => {
+      this.openTextInputDialog({
+        title: "Streaming Server Port",
+        message: "Port for NuvioService streaming server (default: 11470)",
+        initialValue: String(connection.streamingServerPort || 11470),
+        inputType: "number",
+        returnFocusKey: "mediaServers:streamingPort",
+        onSubmit: async (value) => {
+          if (!current()) return;
+          const port = parseInt(value, 10);
+          if (!Number.isFinite(port) || port < 1 || port > 65535) {
+            this.mediaServerError = "Invalid port number";
+            return;
+          }
+          await NuvioServiceRepository.update(connection.id, { streamingServerPort: port });
+        }
+      });
+    });
+    body += this.renderActionRow({
+      focusKey: "mediaServers:streamingPort",
+      title: "Streaming Server Port",
+      value: String(connection.streamingServerPort || 11470)
+    });
+    // Refresh streaming server URL
+    this.actionMap.set("mediaServers:refreshStreamingUrl", async () => {
+      if (!current()) return;
+      try {
+        const baseUrl = `http://${connection.address}:${connection.port}`;
+        const settingsResponse = await httpRequest(`${baseUrl}/settings`, {
+          includeSessionAuth: false,
+          timeoutMs: 5000
+        });
+        if (settingsResponse?.streaming_server_url) {
+          await NuvioServiceRepository.update(connection.id, { streamingServerUrl: settingsResponse.streaming_server_url });
+        }
+      } catch (_) {
+        if (!current()) return;
+        this.mediaServerError = "Failed to refresh streaming server URL";
+      }
+    });
+    body += this.renderActionRow({
+      focusKey: "mediaServers:refreshStreamingUrl",
+      title: "Refresh Streaming Server URL"
+    });
+    this.actionMap.set("mediaServers:remove", () =>
+      this.openOptionDialog({
+        title: t("servers_remove_confirm_title"),
+        message: t("servers_remove_confirm_message", [connection.name]),
+        options: [
+          { id: "remove", label: t("servers_remove") },
+          { id: "cancel", label: t("action_cancel") }
+        ],
+        selectedId: "cancel",
+        returnFocusKey: "mediaServers:remove",
+        onSelect: async (option) => {
+          if (current() && option.id === "remove") {
+            await NuvioServiceRepository.remove(connection.id);
+            if (current()) this.mediaServersView = "list";
+          }
+        }
+      })
+    );
+    body += this.renderActionRow({ focusKey: "mediaServers:remove", title: t("servers_remove") });
   } else if (connection) {
+    // Jellyfin/Emby connection detail view (existing behavior)
     body += `<h3>${this.escapeMediaServerText(connection.name)}</h3><p>${this.escapeMediaServerText(t("servers_signed_in_as", [connection.name, connection.userName]))}</p>`;
     for (const [field, label] of [
       ["enabled", "servers_enabled"],
