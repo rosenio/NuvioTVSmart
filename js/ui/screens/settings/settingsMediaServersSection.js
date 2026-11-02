@@ -47,10 +47,6 @@ export function renderMediaServersSection() {
   // Check Nuvio Service connection status (async, updates cache)
   this.checkNuvioServiceStatus = async (connection) => {
     const key = `${connection.address}:${connection.port}`;
-    if (this._nuvioStatusRefreshing?.has(key)) {
-      this._nuvioStatusCache.set(key, 'refreshing');
-      return 'refreshing';
-    }
     try {
       const baseUrl = `http://${connection.address}:${connection.port}`;
       const response = await httpRequest(`${baseUrl}/health`, {
