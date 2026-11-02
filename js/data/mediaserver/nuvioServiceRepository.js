@@ -306,6 +306,7 @@ export const NuvioServiceRepository = {
         id: `nuvio-service-${connection.id}`,
         baseUrl: `nuvio-service://${connection.id}`,
         name: connection.name,
+        displayName: connection.name,
         manifestUrl: `nuvio-service://${connection.id}`,
         type: "nuvio-service",
         enabled: true,

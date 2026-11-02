@@ -11,6 +11,7 @@ export function createPlayerScreenMethods35() {
     DirectDebridResolver,
     WebOsEngineFsResolver,
     TizenStreamingServerResolver,
+    NuvioServiceStreamingResolver,
     logEngineFsDebug,
     getP2pInfoHash,
     t,
