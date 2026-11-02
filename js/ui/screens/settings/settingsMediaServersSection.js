@@ -245,8 +245,11 @@ export function renderMediaServersSection() {
     // Use cached status (async check triggered separately)
     const key = `${connection.address}:${connection.port}`;
     const cachedStatus = this._nuvioStatusCache?.get(key) || 'offline';
-    const statusText = this.renderStatusIndicatorText(cachedStatus);
-    body += `<h3>${this.escapeMediaServerText(connection.name)}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}  •  ${statusText}</p>`;
+    const statusColors = { online: '#00ff00', offline: '#ff0000', refreshing: '#888888' };
+    const statusLabels = { online: 'ONLINE', offline: 'OFFLINE', refreshing: 'CHECKING...' };
+    const color = statusColors[cachedStatus] || statusColors.offline;
+    const label = statusLabels[cachedStatus] || statusLabels.offline;
+    body += `<h3>${this.escapeMediaServerText(connection.name)}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}  •  <span style="color: ${color};">${label}</span></p>`;
 
     // Trigger async status check if not already checked or refreshing
     if (cachedStatus === 'offline' && !this._nuvioStatusRefreshing?.has(key)) {
@@ -458,19 +461,21 @@ export function renderMediaServersSection() {
       this.actionMap.set(id, () => {
         this.mediaServersView = `nuvio:${entry.id}`;
       });
-      // Use cached status for list view
+      // Use cached status for list view, but show refreshing if in progress
       const key = `${entry.address}:${entry.port}`;
+      const isRefreshing = this._nuvioStatusRefreshing?.has(key);
       const cachedStatus = this._nuvioStatusCache?.get(key) || 'offline';
-      const statusText = this.renderStatusIndicatorText(cachedStatus);
+      const displayStatus = isRefreshing ? 'refreshing' : cachedStatus;
       body += this.renderActionRow({
         focusKey: id,
         title: entry.name,
         value: "Nuvio Service",
-        subtitle: `${entry.address}:${entry.port}  •  ${statusText}`
+        subtitle: `${entry.address}:${entry.port}`,
+        status: displayStatus
       });
 
       // Trigger async status check if not already checked or refreshing
-      if (cachedStatus === 'offline' && !this._nuvioStatusRefreshing?.has(key)) {
+      if (cachedStatus === 'offline' && !isRefreshing) {
         this.checkNuvioServiceStatus(entry).then(() => {
           if (current()) this.render();
         });
