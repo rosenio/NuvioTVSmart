@@ -43,12 +43,15 @@ export const NuvioServiceRepository = {
 
     // Test connection and get addons
     try {
+      console.log('[NuvioServiceRepository] Connecting to:', baseUrl);
       const addonsResponse = await httpRequest(`${baseUrl}/addon/installed`, {
         includeSessionAuth: false,
         timeoutMs: 10000
       });
+      console.log('[NuvioServiceRepository] addon/installed response:', addonsResponse);
 
       if (!addonsResponse || addonsResponse.error) {
+        console.log('[NuvioServiceRepository] No addons response or error');
         throw new Error("nuvio_service_unreachable");
       }
 
@@ -57,27 +60,37 @@ export const NuvioServiceRepository = {
         includeSessionAuth: false,
         timeoutMs: 5000
       });
+      console.log('[NuvioServiceRepository] health response:', healthResponse);
 
       if (!healthResponse || healthResponse.status !== "ok") {
+        console.log('[NuvioServiceRepository] Health check failed');
         throw new Error("nuvio_service_unhealthy");
       }
 
-      // Get streaming server URL from settings
+      // Get streaming server URL from settings - declare OUTSIDE try block
       let streamingServerUrl = null;
       try {
         const settingsResponse = await httpRequest(`${baseUrl}/settings`, {
           includeSessionAuth: false,
           timeoutMs: 5000
         });
+        console.log('[NuvioServiceRepository] settings response:', settingsResponse);
         if (settingsResponse?.streaming_server_url) {
           streamingServerUrl = settingsResponse.streaming_server_url;
         }
-      } catch (_) {}
+      } catch (e) {
+        console.log('[NuvioServiceRepository] settings request failed:', e);
+      }
     } catch (error) {
+      console.log('[NuvioServiceRepository] Caught error:', error);
       throw new Error("nuvio_service_unreachable");
     }
 
+    console.log('[NuvioServiceRepository] Past try-catch, creating connection...');
+    console.log('[NuvioServiceRepository] crypto.randomUUID:', typeof globalThis.crypto.randomUUID);
     const id = connectionId || globalThis.crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    console.log('[NuvioServiceRepository] Generated ID:', id, 'connectionId:', connectionId);
+    console.log('[NuvioServiceRepository] About to create connection object...');
     const connection = {
       id,
       address,
@@ -88,12 +101,20 @@ export const NuvioServiceRepository = {
       streamingServerUrl
     };
 
+    console.log('[NuvioServiceRepository] Connection object created:', connection.id);
+    console.log('[NuvioServiceRepository] Getting connections...');
     const connections = getConnections();
+    console.log('[NuvioServiceRepository] Current connections:', connections.length);
+    console.log('[NuvioServiceRepository] Setting connections...');
     setConnections([...connections.filter((c) => c.id !== id), connection]);
+    console.log('[NuvioServiceRepository] Connections set');
     this.changed();
+    console.log('[NuvioServiceRepository] Connection saved, ID:', id);
 
     // Sync installed addons from NuvioTVSmart to NuvioService
+    console.log('[NuvioServiceRepository] Calling syncAddons...');
     await this.syncAddons(connection);
+    console.log('[NuvioServiceRepository] syncAddons done');
     this.startAddonChangeListener();
 
     return connection;
