@@ -5,7 +5,7 @@ import { I18n } from "../../../i18n/index.js";
 import { canDiscoverNuvioService } from "../../../core/network/nuvioServiceDiscovery.js";
 import { httpRequest } from "../../../core/network/httpClient.js";
 const t = (key, params = []) => I18n.t(key, params, { fallback: key });
-export function renderMediaServersSection() {
+export async function renderMediaServersSection() {
   const pid = String(ProfileManager.getActiveProfileId());
   if (this.mediaServerProfileId !== pid) {
     this.mediaServerProfileId = pid;
@@ -147,12 +147,12 @@ export function renderMediaServersSection() {
           return;
         }
         this.mediaServerError = "Discovering Nuvio Service...";
-        this.renderMediaServersSection();
+        await this.renderMediaServersSection();
         const services = await discoverNuvioService({ timeoutMs: 8000 });
         if (!current()) return;
         if (services.length === 0) {
           this.mediaServerError = "No Nuvio Service found on LAN";
-          this.renderMediaServersSection();
+          await this.renderMediaServersSection();
           return;
         }
         // Use the first discovered service
@@ -162,11 +162,11 @@ export function renderMediaServersSection() {
           draft.streamingServerPort = parseInt(service.streamingPort, 10);
         }
         this.mediaServerError = `Found: ${service.name} (${service.address}:${service.port})`;
-        this.renderMediaServersSection();
+        await this.renderMediaServersSection();
       } catch (error) {
         if (!current()) return;
         this.mediaServerError = `Discovery failed: ${error?.message || error}`;
-        this.renderMediaServersSection();
+        await this.renderMediaServersSection();
       }
     });
     if (isNuvioService && canDiscoverNuvioService()) {
@@ -266,7 +266,7 @@ export function renderMediaServersSection() {
       const key = `${connection.address}:${connection.port}`;
       this._nuvioStatusRefreshing = this._nuvioStatusRefreshing || new Set();
       this._nuvioStatusRefreshing.add(key);
-      this.renderMediaServersSection(); // Re-render to show refreshing state
+      await this.renderMediaServersSection(); // Re-render to show refreshing state
       try {
         const baseUrl = `http://${connection.address}:${connection.port}`;
         console.log('[NuvioService] Refreshing streaming server URL from:', baseUrl);
@@ -287,7 +287,7 @@ export function renderMediaServersSection() {
         this.mediaServerError = `Failed to refresh streaming server URL: ${err.message || err}`;
       } finally {
         this._nuvioStatusRefreshing.delete(key);
-        this.renderMediaServersSection(); // Re-render to clear refreshing state
+        await this.renderMediaServersSection(); // Re-render to clear refreshing state
       }
     });
     body += this.renderActionRow({
