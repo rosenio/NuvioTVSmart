@@ -47456,7 +47456,7 @@
   function activateLegacySidebarAction(action, currentRoute = "") {
     var _a14, _b6;
     const normalizedAction = String(action || "");
-    console.log("[DEBUG] activateLegacySidebarAction:", { normalizedAction, currentRoute });
+
     if (!normalizedAction) {
       return;
     }
@@ -47468,19 +47468,18 @@
       normalizedAction === "gotoDiscover"
         ? DISCOVER_SIDEBAR_ITEM
         : getItemForAction(normalizedAction);
-    console.log("[DEBUG] activateLegacySidebarAction target:", target);
+
     if (!target) {
-      console.error("[DEBUG] No target found for action:", normalizedAction);
       return;
     }
     if (target.route === currentRoute) {
-      console.log("[DEBUG] Same route, onSidebarReselect");
+
       (_b6 = (_a14 = Router.getCurrentScreen()) == null ? void 0 : _a14.onSidebarReselect) == null
         ? void 0
         : _b6.call(_a14);
       return;
     }
-    console.log("[DEBUG] Navigating to:", target.route);
+
     Router.navigate(target.route);
   }
   function isSelectedSidebarAction(action, selectedRoute = "") {
@@ -47497,11 +47496,8 @@
     expanded = false
   } = {}) {
     const items = sidebarItems(layout);
-    console.log(
-      "[DEBUG] renderLegacySidebar items:",
-      items.map((i) => ({ action: i.action, route: i.route, labelKey: i.labelKey }))
-    );
-    console.log("[DEBUG] renderLegacySidebar selectedRoute:", selectedRoute);
+
+
     const selectedItem = getSelectedItem(selectedRoute);
     const profileState = profile2 || {};
     const showProfileSelector = Boolean(
@@ -47856,15 +47852,8 @@
             ".home-sidebar .focusable, .modern-sidebar-panel .focusable"
           )) || []
     );
-    console.log("[DEBUG] bindRootSidebarEvents currentRoute:", currentRoute);
-    console.log(
-      "[DEBUG] bindRootSidebarEvents focusables:",
-      focusables.map((n) => ({
-        action: n.dataset.action,
-        index: n.dataset.navIndex,
-        route: n.dataset.route
-      }))
-    );
+
+
     const moveSidebarFocus = (currentNode, delta) => {
       const nodes = focusables.filter((node) => node.isConnected);
       const currentIndex = nodes.indexOf(currentNode);
@@ -47890,7 +47879,7 @@
           ? void 0
           : _c.call(event);
         const action = String(node.dataset.action || "");
-        console.log("[DEBUG] sidebar onclick:", {
+
           action,
           currentRoute,
           nodeIndex: node.dataset.navIndex
@@ -189286,7 +189275,7 @@
         this.container.querySelectorAll('[data-action="gotoSettings"]').forEach((btn) => {
           btn.onclick = (e) => {
             var _a14;
-            console.log("[DEBUG] Content gotoSettings onclick:", {
+
               isConnected: btn.isConnected,
               inContainer: (_a14 = this.container) == null ? void 0 : _a14.contains(btn)
             });
@@ -190212,7 +190201,7 @@
       },
       async navigate(routeName, params = {}, options = {}) {
         var _a14, _b6, _c, _d;
-        console.log("[DEBUG] Router.navigate called:", {
+
           routeName,
           params,
           options,

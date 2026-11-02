@@ -555,10 +555,7 @@ export function createLiveTvScreenMethods02() {
       // Settings button
       this.container.querySelectorAll('[data-action="gotoSettings"]').forEach((btn) => {
         btn.onclick = (e) => {
-          console.log("[DEBUG] Content gotoSettings onclick:", {
-            isConnected: btn.isConnected,
-            inContainer: this.container?.contains(btn)
-          });
+
           Router.navigate("settings");
         };
       });

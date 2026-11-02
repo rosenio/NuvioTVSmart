@@ -64,7 +64,7 @@ export async function getSidebarProfileState({ cacheOnly = false } = {}) {
 
 export function activateLegacySidebarAction(action, currentRoute = "") {
   const normalizedAction = String(action || "");
-  console.log("[DEBUG] activateLegacySidebarAction:", { normalizedAction, currentRoute });
+
   if (!normalizedAction) {
     return;
   }
@@ -74,17 +74,17 @@ export function activateLegacySidebarAction(action, currentRoute = "") {
   }
 
   const target = normalizedAction === "gotoDiscover" ? DISCOVER_SIDEBAR_ITEM : getItemForAction(normalizedAction);
-  console.log("[DEBUG] activateLegacySidebarAction target:", target);
+
   if (!target) {
-    console.error("[DEBUG] No target found for action:", normalizedAction);
+
     return;
   }
   if (target.route === currentRoute) {
-    console.log("[DEBUG] Same route, onSidebarReselect");
+  
     Router.getCurrentScreen()?.onSidebarReselect?.();
     return;
   }
-  console.log("[DEBUG] Navigating to:", target.route);
+
   Router.navigate(target.route);
 }
 
@@ -94,11 +94,8 @@ export function isSelectedSidebarAction(action, selectedRoute = "") {
 
 export function renderLegacySidebar({ selectedRoute = "home", profile = null, layout = {}, expanded = false } = {}) {
   const items = sidebarItems(layout);
-  console.log(
-    "[DEBUG] renderLegacySidebar items:",
-    items.map((i) => ({ action: i.action, route: i.route, labelKey: i.labelKey }))
-  );
-  console.log("[DEBUG] renderLegacySidebar selectedRoute:", selectedRoute);
+
+
   const selectedItem = getSelectedItem(selectedRoute);
   const profileState = profile || {};
   const showProfileSelector = Boolean(profileState.showProfileSelector && profileState.activeProfileName);
