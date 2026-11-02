@@ -21,6 +21,9 @@ export function registerLayoutActions(model) {
   this.actionMap.set("layout:toggle:cardAppearance", () => {
     this.toggleExpandedSection("layout", "cardAppearance");
   });
+  this.actionMap.set("layout:toggle:customPosters", () => {
+    this.toggleExpandedSection("layout", "customPosters");
+  });
   HOME_LAYOUT_OPTIONS.forEach((option) => {
     this.actionMap.set(`layout:layout:${option.id}`, () => {
       LayoutPreferences.set({ homeLayout: option.id });
@@ -197,6 +200,11 @@ export function registerLayoutActions(model) {
   this.actionMap.set("layout:modernLandscapePosters", () => {
     LayoutPreferences.set({
       modernLandscapePostersEnabled: !LayoutPreferences.get().modernLandscapePostersEnabled
+    });
+  });
+  this.actionMap.set("layout:alwaysShowLandscapeClearlogo", () => {
+    LayoutPreferences.set({
+      alwaysShowLandscapeClearlogo: !LayoutPreferences.get().alwaysShowLandscapeClearlogo
     });
   });
   this.actionMap.set("layout:modernHeroFullScreenBackdrop", () => {

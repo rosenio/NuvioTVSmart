@@ -46,6 +46,20 @@ export function renderLayoutMarkup(model) {
             ${
               isModernLayout
                 ? this.renderToggleRow({
+                    focusKey: "layout:alwaysShowLandscapeClearlogo",
+                    title: t("layout_always_show_landscape_clearlogo", {}, "Always Backdrop with Logo for Landscape Posters"),
+                    subtitle: t(
+                      "layout_always_show_landscape_clearlogo_sub",
+                      {},
+                      "Ignore landscape poster from addon and use backdrop with clearlogo overlay instead."
+                    ),
+                    checked: Boolean(model.layout.alwaysShowLandscapeClearlogo)
+                  })
+                : ""
+            }
+            ${
+              isModernLayout
+                ? this.renderToggleRow({
                     focusKey: "layout:modernHeroFullScreenBackdrop",
                     title: t("settings.layout.fullscreenHeroBackdrop.title"),
                     subtitle: t("settings.layout.fullscreenHeroBackdrop.subtitle"),
@@ -380,7 +394,6 @@ export function renderLayoutMarkup(model) {
 
   return `
           ${this.renderSectionHeader(SECTION_META.find((item) => item.id === "layout"))}
-          <div class="settings-group-card"><div class="settings-stack">${renderCustomPosterSettings.call(this)}</div></div>
           <div class="settings-group-card settings-group-card-fill">
             <div class="settings-stack">
               ${this.renderCollapsibleRow({
@@ -419,6 +432,13 @@ export function renderLayoutMarkup(model) {
                 bodyHtml: focusedPosterBody
               })}
               ${this.renderCollapsibleRow({ focusKey: "layout:toggle:cardAppearance", title: t("settings_card_depth_title", {}, "Card appearance"), subtitle: t("settings_card_depth_description", {}, "Size, corners and depth surfaces"), expanded: Boolean(expanded.cardAppearance), bodyHtml: cardAppearanceBody })}
+              ${this.renderCollapsibleRow({
+                focusKey: "layout:toggle:customPosters",
+                title: t("layout_custom_poster_title", {}, "Custom Poster Source"),
+                subtitle: t("layout_section_custom_poster_desc", {}, "Use artwork from an external poster service."),
+                expanded: Boolean(expanded.customPosters),
+                bodyHtml: `<div class="settings-stack">${renderCustomPosterSettings.call(this)}</div>`
+              })}
             </div>
           </div>
         `;

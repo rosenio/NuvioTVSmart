@@ -1,8 +1,37 @@
 ## Unreleased
 
+## 1.3.1
+
 ### Improvements & Fixes
 
-- Snap Home camera and detail-rail scrolling on LG webOS while preserving poster animations and image-loading budgets (#1153) (@malkstar)
+- Holding a seek now moves the player bar, time and end time together with the preview on every step, aligned with Android TV (@WhiteGiso)
+- Library posters now render as images so Samsung Tizen paints them correctly (#1209) (@WhiteGiso)
+- Ambient mode now displays images that report zero natural width (#1211) (@WhiteGiso)
+- Smoother post-play mini window on Smart TV: the video plane stays rectangular, the ending movie no longer shows behind the recommendation backdrop during the entrance transition, and the video keeps playing without the extra GPU compositing (@WhiteGiso)
+- Post-play now hides every subtitle renderer (HTML, bitmap, ASS and native webOS/Tizen), aligned with Android TV (@WhiteGiso)
+- Released the webOS startup audio gate after track discovery so the parental guide can appear (@WhiteGiso)
+
+## 1.3.0
+
+### Improvements & Fixes
+
+- Added automatic subtitle synchronization for add-on subtitles on LG webOS and Samsung Tizen, aligned with Android TV AutoSync (#1058) (@WhiteGiso)
+- Added skip intervals derived from Matroska chapters (#1189) (@WhiteGiso)
+- Added Android TV's "Always Backdrop with Logo for Landscape Posters" layout option, synced with the profile (@WhiteGiso)
+- Added Hebrew translations and fixed Hebrew P2P consent line breaks (@haveAnIssue, @WhiteGiso)
+- Media servers now list their streams instead of "No streams found", negotiate native TV formats and recover failed direct play (#1180, #1183) (@jaydeep-pipaliya, @WhiteGiso)
+- Improved Samsung Tizen playback: preferred audio and subtitle labels from MKV metadata, late audio-preference reapply, AVPlay track alignment, locally rendered embedded VobSub subtitles and no header warnings on the playback proxy path (#1127, #1128, #1163, #884, #1093) (@WhiteGiso)
+- Kept ambient mode above the Tizen screensaver and supported Tizen engines without AbortController (#1195, #1174) (@WhiteGiso)
+- Restored animated Home, detail, Search and Discover focus scrolling on LG webOS, aligned with Android TV (@WhiteGiso)
+- Made returning to Home, opening Settings and opening the sidebar faster and smoother on TV (#1186) (@WhiteGiso)
+- Choosing Home from the menu on another screen now lands on Home with the menu closed, aligned with Android TV (@WhiteGiso)
+- Home artwork now loads after long scrolls, and pending or failed posters show the card surface instead of their title as text (@WhiteGiso)
+- Supplied landscape artwork keeps its own branding without a duplicate title overlay (#1178) (@WhiteGiso)
+- The Home hero and detail trailer button now pick the trailer in the TMDB language before falling back to English, aligned with Android TV (@WhiteGiso)
+- Dates, Discover filters and the player clock now follow the app language and its time format (#1166) (@WhiteGiso)
+- Aligned the player pause overlay and the Modern sidebar metrics with Android TV (#1099) (@WhiteGiso)
+- Unified custom poster controls in the layout settings list (#1185) (@WhiteGiso)
+- Settings icons no longer flash their names as text on first open, and expected Tizen PluginService fallbacks no longer appear as Console errors (#1113) (@WhiteGiso)
 
 ## 1.2.10
 

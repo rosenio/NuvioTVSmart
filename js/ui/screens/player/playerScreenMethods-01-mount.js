@@ -1,3 +1,4 @@
+import { canResolveMediaServerStream } from "../../../data/mediaserver/mediaServerRepository.js";
 import { loadPlayerShuffleWatched } from "./playerEpisodeShuffle.js";
 import { activeStreamLinkProfile } from "../../../data/local/streamLinkCacheStore.js";
 import { ScreenUtils } from "../../navigation/screen.js";
@@ -226,6 +227,9 @@ export function createPlayerScreenMethods01() {
             maxWaitMs: prioritizeWebOsRemoteMkvPlayback ? WEBOS_REMOTE_MKV_AUDIO_GATE_MAX_WAIT_MS : 0
           });
         }
+        if (!this.currentEngineFsStream) {
+          this.prefetchTizenEmbeddedAudioTracks(initialStreamUrl, sourceCandidate);
+        }
         const playbackStartPromise = this.startPlayerControllerPlayback(
           this.activePlaybackUrl,
           this.buildPlaybackContext(sourceCandidate),
@@ -246,7 +250,8 @@ export function createPlayerScreenMethods01() {
         const sourceCandidate = initialStreamCandidate || this.getCurrentStreamCandidate();
         if (
           sourceCandidate &&
-          (DirectDebridResolver.canResolveStream(sourceCandidate) ||
+          (canResolveMediaServerStream(sourceCandidate) ||
+            DirectDebridResolver.canResolveStream(sourceCandidate) ||
             WebOsEngineFsResolver.canResolveStream(sourceCandidate) ||
             TizenStreamingServerResolver.canResolveStream(sourceCandidate))
         ) {
