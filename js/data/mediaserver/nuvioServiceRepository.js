@@ -104,7 +104,7 @@ export const NuvioServiceRepository = {
         id,
         address,
         port,
-        name: `Nuvio Service (${address}:${port})`,
+        name: "Nuvio Service",
         enabled: true,
         createdAt: Date.now(),
         streamingServerUrl

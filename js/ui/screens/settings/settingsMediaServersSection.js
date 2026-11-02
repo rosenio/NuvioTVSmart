@@ -3,6 +3,7 @@ import { NuvioServiceRepository } from "../../../data/mediaserver/nuvioServiceRe
 import { ProfileManager } from "../../../core/profile/profileManager.js";
 import { I18n } from "../../../i18n/index.js";
 import { canDiscoverNuvioService } from "../../../core/network/nuvioServiceDiscovery.js";
+import { httpRequest } from "../../../core/network/httpClient.js";
 const t = (key, params = []) => I18n.t(key, params, { fallback: key });
 export function renderMediaServersSection() {
   const pid = String(ProfileManager.getActiveProfileId());
@@ -222,16 +223,22 @@ export function renderMediaServersSection() {
       if (!current()) return;
       try {
         const baseUrl = `http://${connection.address}:${connection.port}`;
+        console.log('[NuvioService] Refreshing streaming server URL from:', baseUrl);
         const settingsResponse = await httpRequest(`${baseUrl}/settings`, {
           includeSessionAuth: false,
-          timeoutMs: 5000
+          timeoutMs: 10000
         });
+        console.log('[NuvioService] Settings response:', settingsResponse);
         if (settingsResponse?.streaming_server_url) {
           await NuvioServiceRepository.update(connection.id, { streamingServerUrl: settingsResponse.streaming_server_url });
+          this.mediaServerError = null;
+        } else {
+          this.mediaServerError = "No streaming server URL in response";
         }
-      } catch (_) {
+      } catch (err) {
         if (!current()) return;
-        this.mediaServerError = "Failed to refresh streaming server URL";
+        console.error('[NuvioService] Failed to refresh streaming server URL:', err);
+        this.mediaServerError = `Failed to refresh streaming server URL: ${err.message || err}`;
       }
     });
     body += this.renderActionRow({
