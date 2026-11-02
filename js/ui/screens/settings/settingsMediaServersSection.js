@@ -45,8 +45,8 @@ export function renderMediaServersSection() {
   });
   if (view === "add") {
     const draft = (this.mediaServerDraft ||= {
-      providerId: "jellyfin",
-      address: "",
+      providerId: "nuvio-service",
+      address: "192.168.15.4:11471",
       username: "",
       password: ""
     });

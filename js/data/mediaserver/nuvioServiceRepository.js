@@ -41,6 +41,9 @@ export const NuvioServiceRepository = {
     const pid = profile();
     const baseUrl = `http://${address}:${port}`;
 
+    // Streaming server URL - will be set after health check
+    let streamingServerUrl = null;
+
     // Test connection and get addons
     try {
       console.log('[NuvioServiceRepository] Connecting to:', baseUrl);
@@ -67,8 +70,7 @@ export const NuvioServiceRepository = {
         throw new Error("nuvio_service_unhealthy");
       }
 
-      // Get streaming server URL from settings - declare OUTSIDE try block
-      let streamingServerUrl = null;
+      // Get streaming server URL from settings
       try {
         const settingsResponse = await httpRequest(`${baseUrl}/settings`, {
           includeSessionAuth: false,
@@ -81,6 +83,12 @@ export const NuvioServiceRepository = {
       } catch (e) {
         console.log('[NuvioServiceRepository] settings request failed:', e);
       }
+      // Fallback: derive streaming server URL from connection address (same host, port 11470)
+      if (!streamingServerUrl || streamingServerUrl.includes('localhost')) {
+        const host = address.includes(':') ? address.split(':')[0] : address;
+        streamingServerUrl = `http://${host}:11470`;
+        console.log('[NuvioServiceRepository] Derived streaming server URL:', streamingServerUrl);
+      }
     } catch (error) {
       console.log('[NuvioServiceRepository] Caught error:', error);
       throw new Error("nuvio_service_unreachable");
@@ -91,33 +99,37 @@ export const NuvioServiceRepository = {
     const id = connectionId || globalThis.crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     console.log('[NuvioServiceRepository] Generated ID:', id, 'connectionId:', connectionId);
     console.log('[NuvioServiceRepository] About to create connection object...');
-    const connection = {
-      id,
-      address,
-      port,
-      name: `Nuvio Service (${address}:${port})`,
-      enabled: true,
-      createdAt: Date.now(),
-      streamingServerUrl
-    };
+    try {
+      const connection = {
+        id,
+        address,
+        port,
+        name: `Nuvio Service (${address}:${port})`,
+        enabled: true,
+        createdAt: Date.now(),
+        streamingServerUrl
+      };
+      console.log('[NuvioServiceRepository] Connection object created:', connection.id);
+      console.log('[NuvioServiceRepository] Getting connections...');
+      const connections = getConnections();
+      console.log('[NuvioServiceRepository] Current connections:', connections.length);
+      console.log('[NuvioServiceRepository] Setting connections...');
+      setConnections([...connections.filter((c) => c.id !== id), connection]);
+      console.log('[NuvioServiceRepository] Connections set');
+      this.changed();
+      console.log('[NuvioServiceRepository] Connection saved, ID:', id);
 
-    console.log('[NuvioServiceRepository] Connection object created:', connection.id);
-    console.log('[NuvioServiceRepository] Getting connections...');
-    const connections = getConnections();
-    console.log('[NuvioServiceRepository] Current connections:', connections.length);
-    console.log('[NuvioServiceRepository] Setting connections...');
-    setConnections([...connections.filter((c) => c.id !== id), connection]);
-    console.log('[NuvioServiceRepository] Connections set');
-    this.changed();
-    console.log('[NuvioServiceRepository] Connection saved, ID:', id);
+      // Sync installed addons from NuvioTVSmart to NuvioService
+      console.log('[NuvioServiceRepository] Calling syncAddons...');
+      await this.syncAddons(connection);
+      console.log('[NuvioServiceRepository] syncAddons done');
+      this.startAddonChangeListener();
 
-    // Sync installed addons from NuvioTVSmart to NuvioService
-    console.log('[NuvioServiceRepository] Calling syncAddons...');
-    await this.syncAddons(connection);
-    console.log('[NuvioServiceRepository] syncAddons done');
-    this.startAddonChangeListener();
-
-    return connection;
+      return connection;
+    } catch (e) {
+      console.error('[NuvioServiceRepository] ERROR in connection creation:', e);
+      throw e;
+    }
   },
 
   startAddonChangeListener() {
@@ -145,15 +157,37 @@ export const NuvioServiceRepository = {
     const baseUrl = buildBaseUrl(connection);
     try {
       const installedAddons = await addonRepository.getInstalledAddons({ includeMediaServers: false });
+      console.log('[NuvioServiceRepository] syncAddons: found', installedAddons.length, 'installed addons');
+      installedAddons.forEach((a, i) => console.log(`[NuvioServiceRepository] syncAddons: addon[${i}] enabled=${a.enabled} hasManifest=${!!a.manifest} name=${a.name || a.manifest?.name} baseUrl=${a.baseUrl} manifestUrl=${a.manifestUrl}`));
+      
       const externalAddons = installedAddons
-        .filter((a) => a.enabled && a.manifest)
-        .map((addon) => ({
-          manifestUrl: addon.manifestUrl || addon.baseUrl,
-          manifest: addon.manifest,
-          enabled: addon.enabled,
-          name: addon.name || addon.manifest?.name
-        }));
+        .filter((a) => (a.enabled !== false) && (a.manifest || a.baseUrl))
+        .map((addon) => {
+          // Extract base manifest URL (strip query params) for service to fetch manifest
+          let manifestUrl = addon.manifestUrl || addon.baseUrl;
+          if (manifestUrl && !manifestUrl.endsWith('.json')) {
+            // Torrentio custom URLs have query params - extract base manifest URL
+            try {
+              const url = new URL(manifestUrl);
+              // Use only origin + /manifest.json (discard path and query)
+              manifestUrl = `${url.origin}/manifest.json`;
+            } catch (e) {
+              // fallback: append manifest.json
+              if (!manifestUrl.endsWith('/')) manifestUrl += '/';
+              manifestUrl += 'manifest.json';
+            }
+          }
+          return {
+            manifestUrl,
+            manifest: addon.manifest,
+            enabled: addon.enabled !== false,
+            name: addon.name || addon.manifest?.name
+          };
+        });
 
+      console.log('[NuvioServiceRepository] syncAddons: sending', externalAddons.length, 'addons to service');
+      externalAddons.forEach((a, i) => console.log(`[NuvioServiceRepository] syncAddons: addon[${i}] ${a.name} -> ${a.manifestUrl}`));
+      
       if (externalAddons.length === 0) return;
 
       await httpRequest(`${baseUrl}/addon/sync`, {
@@ -163,8 +197,9 @@ export const NuvioServiceRepository = {
         includeSessionAuth: false,
         timeoutMs: 30000
       });
+      console.log('[NuvioServiceRepository] syncAddons: sync completed');
     } catch (error) {
-      console.warn("Failed to sync addons to NuvioService:", error);
+      console.warn('[NuvioServiceRepository] Failed to sync addons:', error);
     }
   },
 
