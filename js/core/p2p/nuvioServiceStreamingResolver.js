@@ -62,9 +62,10 @@ export const NuvioServiceStreamingResolver = {
   canResolveStream(stream = {}) {
     const infoHash = getInfoHash(stream);
     if (!infoHash) return false;
-    const baseUrl = NuvioServiceRepository.isNuvioServiceBase(stream?.addonBaseUrl) ||
-      NuvioServiceRepository.isNuvioServiceBase(stream?.raw?.addonBaseUrl);
-    return Boolean(baseUrl);
+    const addonBaseUrl = stream?.addonBaseUrl || stream?.raw?.addonBaseUrl;
+    const canResolve = addonBaseUrl && NuvioServiceRepository.isNuvioServiceBase(addonBaseUrl);
+    console.log('[NuvioServiceStreamingResolver] canResolveStream:', { infoHash, canResolve, addonBaseUrl });
+    return Boolean(canResolve);
   },
 
   isNuvioServiceStream(stream = {}) {
@@ -72,10 +73,10 @@ export const NuvioServiceStreamingResolver = {
   },
 
   async getStreamingServerBaseUrl(stream = {}) {
-    const baseUrl = NuvioServiceRepository.isNuvioServiceBase(stream?.addonBaseUrl) ||
-      NuvioServiceRepository.isNuvioServiceBase(stream?.raw?.addonBaseUrl);
-    if (!baseUrl) return null;
-    const connectionId = NuvioServiceRepository.parseBase(baseUrl);
+    const addonBaseUrl = stream?.addonBaseUrl || stream?.raw?.addonBaseUrl;
+    console.log('[NuvioServiceStreamingResolver] getStreamingServerBaseUrl: addonBaseUrl:', addonBaseUrl);
+    if (!addonBaseUrl || !NuvioServiceRepository.isNuvioServiceBase(addonBaseUrl)) return null;
+    const connectionId = NuvioServiceRepository.parseBase(addonBaseUrl);
     const connection = connectionId ? NuvioServiceRepository.connection(connectionId) : null;
     if (!connection?.enabled) return null;
     return getStreamingServerUrl(connection);
@@ -110,6 +111,7 @@ export const NuvioServiceStreamingResolver = {
       return { status: "unsupported", detail: "NuvioService streaming server not configured" };
     }
     const playbackUrl = buildPlaybackUrl(baseUrl, infoHash, fileIdx);
+    console.log('[NuvioServiceStreamingResolver] resolve:', { infoHash, fileIdx, baseUrl, playbackUrl });
     return {
       status: "success",
       stream: {
