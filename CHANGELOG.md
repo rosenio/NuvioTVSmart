@@ -1,5 +1,23 @@
 ## Unreleased
 
+## 1.3.5
+
+### Improvements & Fixes
+
+- Added a first-slide Ambient paint diagnostic (viewport, root, stage, backdrop sizes and computed opacity) for the remaining Tizen black-screen report; no behavior change (#1172) (@WhiteGiso)
+
+## 1.3.4
+
+### Improvements & Fixes
+
+- Added one-per-session Ambient diagnostics for the Tizen black-screen report: start, blocked idle reason, show and first rendered slide, with no behavior change (#1172) (@WhiteGiso)
+
+## 1.3.3
+
+### Improvements & Fixes
+
+- A failing optional Samsung screensaver API can no longer stop Ambient before it opens on older Tizen engines; the AppCommon access is now fully best-effort (#1172) (@WhiteGiso)
+
 ## 1.3.2
 
 ### Improvements & Fixes
