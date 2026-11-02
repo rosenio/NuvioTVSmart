@@ -31,9 +31,20 @@ function getFileIdx(stream = {}) {
   return -1;
 }
 
-function buildPlaybackUrl(baseUrl, infoHash, fileIdx) {
+function buildPlaybackUrl(baseUrl, infoHash, fileIdx, magnetUri, filename, peerSearchSources) {
   const root = String(baseUrl || "").replace(/\/+$/, "");
-  return `${root}/stream/${encodeURIComponent(infoHash)}/${encodeURIComponent(String(fileIdx))}`;
+  const url = `${root}/stream/${encodeURIComponent(infoHash)}/${encodeURIComponent(String(fileIdx))}`;
+  const params = [];
+  if (magnetUri) {
+    params.push(`magnet=${encodeURIComponent(magnetUri)}`);
+  }
+  if (filename) {
+    params.push(`filename=${encodeURIComponent(filename)}`);
+  }
+  if (peerSearchSources && peerSearchSources.length > 0) {
+    params.push(`peerSearch=${encodeURIComponent(JSON.stringify({ sources: peerSearchSources }))}`);
+  }
+  return params.length > 0 ? `${url}?${params.join('&')}` : url;
 }
 
 async function getStreamingServerUrl(connection) {
@@ -110,8 +121,29 @@ export const NuvioServiceStreamingResolver = {
     if (!baseUrl) {
       return { status: "unsupported", detail: "NuvioService streaming server not configured" };
     }
-    const playbackUrl = buildPlaybackUrl(baseUrl, infoHash, fileIdx);
-    console.log('[NuvioServiceStreamingResolver] resolve:', { infoHash, fileIdx, baseUrl, playbackUrl });
+    // Build magnet URI from infoHash and available sources/trackers
+    const sources = stream?.sources || stream?.raw?.sources || stream?.behaviorHints?.sources || [];
+    const trackers = Array.isArray(sources) ? sources.filter(s => s.startsWith('tracker:') || s.startsWith('dht:')) : [];
+    // Default public trackers (used by Stremio streaming servers) when addon doesn't provide any
+    const defaultTrackers = [
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.opentrackr.org:1337',
+      'udp://tracker.torrent.eu.org:451',
+      'udp://tracker.bittor.pw:1337',
+      'https://tracker.nanoha.org:443/announce',
+    ];
+    let magnetUri = `magnet:?xt=urn:btih:${infoHash}`;
+    const allTrackers = trackers.length > 0
+      ? trackers.map(t => t.replace(/^tracker:/, '').replace(/^dht:/, ''))
+      : defaultTrackers;
+    const trParams = allTrackers.map(t => `tr=${encodeURIComponent(t)}`).join('&');
+    magnetUri += `&${trParams}`;
+    // Pass filename for matching in case fileIdx doesn't match torrent's file order
+    const filename = stream?.behaviorHints?.filename || stream?.raw?.behaviorHints?.filename;
+    // Build peer search sources like webOS service: dht:infoHash + trackers
+    const peerSearchSources = ['dht:' + infoHash, ...allTrackers.map(t => 'tracker:' + t)];
+    const playbackUrl = buildPlaybackUrl(baseUrl, infoHash, fileIdx, magnetUri, filename, peerSearchSources);
+    console.log('[NuvioServiceStreamingResolver] resolve:', { infoHash, fileIdx, baseUrl, playbackUrl, hasMagnet: true, trackers: allTrackers.length, filename, peerSearchSources: peerSearchSources.length });
     return {
       status: "success",
       stream: {
