@@ -66,6 +66,26 @@ export function renderMediaServersSection() {
     }
   };
 
+  // Render status indicator text (ONLINE/OFFLINE/CHECKING...)
+  this.renderStatusIndicatorText = (status) => {
+    const labels = {
+      online: 'ONLINE',
+      offline: 'OFFLINE',
+      refreshing: 'CHECKING...'
+    };
+    return labels[status] || labels.offline;
+  };
+
+  // Get status color
+  this.getStatusColor = (status) => {
+    const colors = {
+      online: '#00ff00',
+      offline: '#ff0000',
+      refreshing: '#888888'
+    };
+    return colors[status] || colors.offline;
+  };
+
   // Render status indicator (green=online, red=offline, gray=refreshing)
   this.renderStatusIndicator = (status) => {
     const colors = {
@@ -225,14 +245,14 @@ export function renderMediaServersSection() {
     // Use cached status (async check triggered separately)
     const key = `${connection.address}:${connection.port}`;
     const cachedStatus = this._nuvioStatusCache?.get(key) || 'offline';
-    const statusHtml = this.renderStatusIndicator(cachedStatus);
-    body += `<h3>${this.escapeMediaServerText(connection.name)} ${statusHtml}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}</p>`;
+    const statusText = this.renderStatusIndicatorText(cachedStatus);
+    body += `<h3>${this.escapeMediaServerText(connection.name)}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}  •  ${statusText}</p>`;
 
     // Trigger async status check if not already checked or refreshing
-    const self = this;
+    const self2 = this;
     if (cachedStatus === 'offline' && !this._nuvioStatusRefreshing?.has(key)) {
       this.checkNuvioServiceStatus(connection).then(() => {
-        if (current()) self.renderMediaServersSection();
+        if (current()) self2.renderMediaServersSection();
       });
     }
     for (const [field, label] of [
@@ -275,12 +295,13 @@ export function renderMediaServersSection() {
       value: String(connection.streamingServerPort || 11470)
     });
     // Refresh streaming server URL
+    const self = this;
     this.actionMap.set("mediaServers:refreshStreamingUrl", async () => {
       if (!current()) return;
       const key = `${connection.address}:${connection.port}`;
-      this._nuvioStatusRefreshing = this._nuvioStatusRefreshing || new Set();
-      this._nuvioStatusRefreshing.add(key);
-      this.renderMediaServersSection(); // Re-render to show refreshing state
+      self._nuvioStatusRefreshing = self._nuvioStatusRefreshing || new Set();
+      self._nuvioStatusRefreshing.add(key);
+      self.renderMediaServersSection(); // Re-render to show refreshing state
       try {
         const baseUrl = `http://${connection.address}:${connection.port}`;
         console.log('[NuvioService] Refreshing streaming server URL from:', baseUrl);
@@ -291,19 +312,19 @@ export function renderMediaServersSection() {
         console.log('[NuvioService] Settings response:', settingsResponse);
         if (settingsResponse?.streaming_server_url) {
           await NuvioServiceRepository.update(connection.id, { streamingServerUrl: settingsResponse.streaming_server_url });
-          this.mediaServerError = null;
+          self.mediaServerError = null;
         } else {
-          this.mediaServerError = "No streaming server URL in response";
+          self.mediaServerError = "No streaming server URL in response";
         }
         // Also refresh connection status
-        await this.checkNuvioServiceStatus(connection);
+        await self.checkNuvioServiceStatus(connection);
       } catch (err) {
         if (!current()) return;
         console.error('[NuvioService] Failed to refresh streaming server URL:', err);
-        this.mediaServerError = `Failed to refresh streaming server URL: ${err.message || err}`;
+        self.mediaServerError = `Failed to refresh streaming server URL: ${err.message || err}`;
       } finally {
-        this._nuvioStatusRefreshing.delete(key);
-        this.renderMediaServersSection(); // Re-render to clear refreshing state
+        self._nuvioStatusRefreshing.delete(key);
+        self.renderMediaServersSection(); // Re-render to clear refreshing state
       }
     });
     body += this.renderActionRow({
@@ -441,19 +462,19 @@ export function renderMediaServersSection() {
       // Use cached status for list view
       const key = `${entry.address}:${entry.port}`;
       const cachedStatus = this._nuvioStatusCache?.get(key) || 'offline';
-      const statusHtml = this.renderStatusIndicator(cachedStatus);
+      const statusText = this.renderStatusIndicatorText(cachedStatus);
       body += this.renderActionRow({
         focusKey: id,
-        title: entry.name + statusHtml,
+        title: entry.name,
         value: "Nuvio Service",
-        subtitle: `${entry.address}:${entry.port}`
+        subtitle: `${entry.address}:${entry.port}  •  ${statusText}`
       });
 
       // Trigger async status check if not already checked or refreshing
-      const self = this;
+      const selfList = this;
       if (cachedStatus === 'offline' && !this._nuvioStatusRefreshing?.has(key)) {
         this.checkNuvioServiceStatus(entry).then(() => {
-          if (current()) self.renderMediaServersSection();
+          if (current()) selfList.renderMediaServersSection();
         });
       }
     }
