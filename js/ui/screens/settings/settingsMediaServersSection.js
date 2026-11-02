@@ -229,9 +229,10 @@ export function renderMediaServersSection() {
     body += `<h3>${this.escapeMediaServerText(connection.name)} ${statusHtml}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}</p>`;
 
     // Trigger async status check if not already checked or refreshing
+    const self = this;
     if (cachedStatus === 'offline' && !this._nuvioStatusRefreshing?.has(key)) {
       this.checkNuvioServiceStatus(connection).then(() => {
-        if (current()) this.renderMediaServersSection();
+        if (current()) self.renderMediaServersSection();
       });
     }
     for (const [field, label] of [
@@ -449,9 +450,10 @@ export function renderMediaServersSection() {
       });
 
       // Trigger async status check if not already checked or refreshing
+      const self = this;
       if (cachedStatus === 'offline' && !this._nuvioStatusRefreshing?.has(key)) {
         this.checkNuvioServiceStatus(entry).then(() => {
-          if (current()) this.renderMediaServersSection();
+          if (current()) self.renderMediaServersSection();
         });
       }
     }
