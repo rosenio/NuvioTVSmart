@@ -39,6 +39,45 @@ export function renderMediaServersSection() {
     this.contentFocusKey = "mediaServers:back";
   };
   this.actionMap.set("mediaServers:back", back);
+
+  // Status tracking for refresh
+  this._nuvioStatusRefreshing = this._nuvioStatusRefreshing || new Set();
+  
+  // Check Nuvio Service connection status
+  this.checkNuvioServiceStatus = async (connection) => {
+    const key = `${connection.address}:${connection.port}`;
+    if (this._nuvioStatusRefreshing?.has(key)) {
+      return 'refreshing';
+    }
+    try {
+      const baseUrl = `http://${connection.address}:${connection.port}`;
+      const response = await httpRequest(`${baseUrl}/health`, {
+        includeSessionAuth: false,
+        timeoutMs: 3000
+      });
+      return (response?.status === 'ok') ? 'online' : 'offline';
+    } catch {
+      return 'offline';
+    }
+  };
+
+  // Render status indicator (green=online, red=offline, gray=refreshing)
+  this.renderStatusIndicator = (status) => {
+    const colors = {
+      online: '#00ff00',
+      offline: '#ff0000',
+      refreshing: '#888888'
+    };
+    const labels = {
+      online: 'ONLINE',
+      offline: 'OFFLINE',
+      refreshing: 'CHECKING...'
+    };
+    const color = colors[status] || colors.offline;
+    const label = labels[status] || labels.offline;
+    return `<span style="color: ${color}; font-size: 0.7em; margin-left: 8px;">[${label}]</span>`;
+  };
+
   let body = this.renderActionRow({
     focusKey: "mediaServers:back",
     title: t("action_back"),
@@ -178,7 +217,10 @@ export function renderMediaServersSection() {
       disabled: this.mediaServerConnecting
     });
   } else if (connection && isNuvioServiceConnection) {
-    body += `<h3>${this.escapeMediaServerText(connection.name)}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}</p>`;
+    // Check connection status
+    const status = await this.checkNuvioServiceStatus(connection);
+    const statusHtml = this.renderStatusIndicator(status);
+    body += `<h3>${this.escapeMediaServerText(connection.name)} ${statusHtml}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}</p>`;
     for (const [field, label] of [
       ["enabled", "servers_enabled"]
     ]) {
@@ -221,6 +263,10 @@ export function renderMediaServersSection() {
     // Refresh streaming server URL
     this.actionMap.set("mediaServers:refreshStreamingUrl", async () => {
       if (!current()) return;
+      const key = `${connection.address}:${connection.port}`;
+      this._nuvioStatusRefreshing = this._nuvioStatusRefreshing || new Set();
+      this._nuvioStatusRefreshing.add(key);
+      this.renderMediaServersSection(); // Re-render to show refreshing state
       try {
         const baseUrl = `http://${connection.address}:${connection.port}`;
         console.log('[NuvioService] Refreshing streaming server URL from:', baseUrl);
@@ -239,6 +285,9 @@ export function renderMediaServersSection() {
         if (!current()) return;
         console.error('[NuvioService] Failed to refresh streaming server URL:', err);
         this.mediaServerError = `Failed to refresh streaming server URL: ${err.message || err}`;
+      } finally {
+        this._nuvioStatusRefreshing.delete(key);
+        this.renderMediaServersSection(); // Re-render to clear refreshing state
       }
     });
     body += this.renderActionRow({
