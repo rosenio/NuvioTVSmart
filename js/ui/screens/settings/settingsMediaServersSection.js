@@ -240,11 +240,13 @@ export function renderMediaServersSection() {
   } else if (connection && isNuvioServiceConnection) {
     // Use cached status (async check triggered separately)
     const key = `${connection.address}:${connection.port}`;
+    const isRefreshing = this._nuvioStatusRefreshing?.has(key);
     const cachedStatus = this._nuvioStatusCache?.get(key) || 'offline';
+    const displayStatus = isRefreshing ? 'refreshing' : cachedStatus;
     const statusColors = { online: '#00ff00', offline: '#ff0000', refreshing: '#888888' };
     const statusLabels = { online: 'ONLINE', offline: 'OFFLINE', refreshing: 'CHECKING...' };
-    const color = statusColors[cachedStatus] || statusColors.offline;
-    const label = statusLabels[cachedStatus] || statusLabels.offline;
+    const color = statusColors[displayStatus] || statusColors.offline;
+    const label = statusLabels[displayStatus] || statusLabels.offline;
     body += `<h3>${this.escapeMediaServerText(connection.name)}</h3><p>${this.escapeMediaServerText(`${connection.address}:${connection.port}`)}  •  <span style="color: ${color};">${label}</span></p>`;
 
     // Trigger async status check if not already checked or refreshing
