@@ -107,7 +107,7 @@ export function renderMediaServersSection() {
   if (view === "add") {
     const draft = (this.mediaServerDraft ||= {
       providerId: "nuvio-service",
-      address: "192.168.15.4:11471",
+      address: "192.168.15.7:11471",
       username: "",
       password: ""
     });
@@ -330,6 +330,45 @@ export function renderMediaServersSection() {
     body += this.renderActionRow({
       focusKey: "mediaServers:refreshStreamingUrl",
       title: "Refresh Streaming Server URL"
+    });
+    // Cache size setting for NuvioService streaming server
+    this.actionMap.set("mediaServers:cacheSize", () => {
+      this.openOptionDialog({
+        title: "Cache Size",
+        message: "Maximum cache size for streaming server (larger = more buffering, more storage)",
+        options: [
+          { id: "100", label: "100 MB" },
+          { id: "500", label: "500 MB" },
+          { id: "2048", label: "2 GB (Default)" },
+        ],
+        selectedId: String(connection.cacheSizeMB || 2048),
+        returnFocusKey: "mediaServers:cacheSize",
+        onSelect: async (option) => {
+          if (!current()) return;
+          const cacheSizeMB = parseInt(option.id, 10);
+          if (!Number.isFinite(cacheSizeMB)) return;
+          NuvioServiceRepository.update(connection.id, { cacheSizeMB });
+          // Also send to streaming server
+          try {
+            const baseUrl = `http://${connection.address}:${connection.port}`;
+            const streamingUrl = connection.streamingServerUrl || `${baseUrl.replace(':11471', ':11470')}`;
+            await httpRequest(`${streamingUrl}/settings`, {
+              method: 'POST',
+              includeSessionAuth: false,
+              timeoutMs: 5000,
+              body: JSON.stringify({ cacheSize: cacheSizeMB * 1024 * 1024 })
+            });
+            console.log('[NuvioService] Cache size updated to', cacheSizeMB, 'MB');
+          } catch (e) {
+            console.warn('[NuvioService] Failed to update streaming server cache size:', e);
+          }
+        }
+      });
+    });
+    body += this.renderActionRow({
+      focusKey: "mediaServers:cacheSize",
+      title: "Cache Size",
+      value: `${connection.cacheSizeMB || 2048} MB`
     });
     this.actionMap.set("mediaServers:remove", () =>
       this.openOptionDialog({

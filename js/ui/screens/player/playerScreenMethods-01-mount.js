@@ -184,6 +184,16 @@ export function createPlayerScreenMethods01() {
         this.loadPartyProfile();
       }
       this.pauseOverlayMeta = this.buildPauseOverlayMeta();
+      
+      // Listen for media server changes to clear engine state when NuvioService is removed
+      this.mediaServerChangeHandler = () => {
+        if (this.currentEngineFsStream?.baseUrlKind === 'remote-service') {
+          console.log('[PlayerScreen] Media server changed, clearing NuvioService engine state');
+          this.currentEngineFsStream = null;
+        }
+      };
+      globalThis.document?.addEventListener?.('nuvio:media-servers-changed', this.mediaServerChangeHandler);
+      
       if (!this.isExternalFrameMode()) {
         this.bindVideoEvents();
         this.bindMediaSessionHandlers();

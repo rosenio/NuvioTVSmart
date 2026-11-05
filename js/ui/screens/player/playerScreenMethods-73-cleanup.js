@@ -69,6 +69,11 @@ export function createPlayerScreenMethods73() {
           removeTorrent: true,
           deferRemoveMs: ENGINEFS_NAVIGATION_CLEANUP_GRACE_MS
         });
+        // Remove media server change listener
+        if (this.mediaServerChangeHandler) {
+          globalThis.document?.removeEventListener?.('nuvio:media-servers-changed', this.mediaServerChangeHandler);
+          this.mediaServerChangeHandler = null;
+        }
         this.cancelSeekPreview({ commit: false });
         this.dismissPauseOverlay();
         this.clearSubtitleDelayOverlayTimer();

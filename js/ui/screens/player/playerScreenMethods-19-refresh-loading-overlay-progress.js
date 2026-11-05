@@ -24,7 +24,7 @@ export function createPlayerScreenMethods19() {
         this.loadingVisible && this.currentEngineFsStream && !this.hasPresentedPlaybackFrame && !this.isExternalFrameMode()
       );
       const canShowTorrentOverlay = Boolean(
-        this.currentEngineFsStream && !this.isExternalFrameMode() && !TorrentSettingsStore.get().hideTorrentStats
+        this.currentEngineFsStream && !this.isExternalFrameMode() && !this.hasPresentedPlaybackFrame && !TorrentSettingsStore.get().hideTorrentStats
       );
       if (!canShowLoadingProgress && !canShowTorrentOverlay) {
         if (this.loadingProgress != null) {

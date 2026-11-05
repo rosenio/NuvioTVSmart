@@ -7,6 +7,7 @@ export function createPlayerScreenMethods10() {
     Environment,
     WebOsEngineFsResolver,
     TizenStreamingServerResolver,
+    NuvioServiceStreamingResolver,
     subscribeWebOsCompanionService,
     logEngineFsDebug,
     isLocalEngineFsUrl,
@@ -165,6 +166,10 @@ export function createPlayerScreenMethods10() {
             target.kind === "tizen-streaming-server"
               ? await TizenStreamingServerResolver.remove(target.infoHash, {
                   baseUrl: target.baseUrl,
+                  timeoutMs: 2500
+                })
+              : target.kind === "nuvio-service-streaming"
+              ? await NuvioServiceStreamingResolver.remove(target.infoHash, {
                   timeoutMs: 2500
                 })
               : await WebOsEngineFsResolver.remove(target.infoHash, { timeoutMs: 2500 });
