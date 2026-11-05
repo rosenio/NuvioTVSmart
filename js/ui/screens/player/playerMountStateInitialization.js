@@ -19,6 +19,7 @@ export function initializePlayerMountState(params, initialStreamUrl) {
     normalizeParentalWarnings
   } = internals;
   this.livePlaybackLatched = false;
+  this.liveDurationGrowth = null;
   this.liveWatchClock = new LivePlaybackWatchClock();
   this.subtitles = [];
   this.embeddedSubtitleTracks = [];
@@ -312,6 +313,7 @@ export function initializePlayerMountState(params, initialStreamUrl) {
   this.silentAudioFallbackCount = 0;
   this.maxSilentAudioFallbackCount = 1;
   this.lastPlaybackErrorAt = 0;
+  this.hasRetriedCurrentStreamAfter416 = false;
   this.failedPlaybackUrls = new Set();
   this.failedPlaybackStreamIds = new Set();
   this.playbackStallTimer = null;

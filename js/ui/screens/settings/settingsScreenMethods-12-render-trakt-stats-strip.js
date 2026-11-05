@@ -278,7 +278,6 @@ export function createSettingsScreenMethods12() {
         this.restoreRailScrollTop = null;
       }
       updateSettingsRailIndicatorsSoon(navSlot);
-      updateSettingsScrollIndicatorsSoon(navSlot);
 
       const sectionChanged = this.renderedSectionId !== section.id;
       this.renderedSectionId = section.id;
