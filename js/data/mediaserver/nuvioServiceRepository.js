@@ -49,7 +49,7 @@ export const NuvioServiceRepository = {
       console.log('[NuvioServiceRepository] Connecting to:', baseUrl);
       const addonsResponse = await httpRequest(`${baseUrl}/addon/installed`, {
         includeSessionAuth: false,
-        timeoutMs: 3
+        timeoutMs: 10000
       });
       console.log('[NuvioServiceRepository] addon/installed response:', addonsResponse);
 
@@ -61,7 +61,7 @@ export const NuvioServiceRepository = {
       // Check if service is healthy
       const healthResponse = await httpRequest(`${baseUrl}/health`, {
         includeSessionAuth: false,
-        timeoutMs: 1
+        timeoutMs: 5000
       });
       // console.log('[NuvioServiceRepository] health response:', healthResponse);
 
@@ -74,7 +74,7 @@ export const NuvioServiceRepository = {
       try {
         const settingsResponse = await httpRequest(`${baseUrl}/settings`, {
           includeSessionAuth: false,
-          timeoutMs: 3
+          timeoutMs: 5000
         });
         console.log('[NuvioServiceRepository] settings response:', settingsResponse);
         if (settingsResponse?.streaming_server_url) {
@@ -108,7 +108,7 @@ export const NuvioServiceRepository = {
         enabled: true,
         createdAt: Date.now(),
         streamingServerUrl,
-        cacheSizeMB: 100 // Default 2GB
+        cacheSizeMB: 10 // Default 2GB
       };
       console.log('[NuvioServiceRepository] Connection object created:', connection.id);
       console.log('[NuvioServiceRepository] Getting connections...');

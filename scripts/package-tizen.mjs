@@ -114,11 +114,6 @@ function buildConfigXml({
   return `<?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns:tizen="http://tizen.org/ns/widgets" xmlns="http://www.w3.org/ns/widgets" id="${defaultWidgetUri}" version="${version}" viewmodes="maximized">
   <access origin="*" subdomains="true"/>
-  <access origin="http://10.0.0.0/8" subdomains="true"/>
-  <access origin="http://172.16.0.0/12" subdomains="true"/>
-  <access origin="http://192.168.0.0/16" subdomains="true"/>
-  <access origin="http://127.0.0.1" subdomains="true"/>
-  <access origin="http://localhost" subdomains="true"/>
   <tizen:application id="${appId}" package="${packageId}" required_version="${compatibilityPolicy.tizenInstallMinimumVersion}"/>
   <author href="${defaultWidgetUri}">Nuvio</author>
   <content src="index.html"/>
