@@ -11,6 +11,7 @@ export function createPlayerScreenMethods35() {
     DirectDebridResolver,
     WebOsEngineFsResolver,
     TizenStreamingServerResolver,
+    NuvioServiceStreamingResolver,
     logEngineFsDebug,
     getP2pInfoHash,
     t,
@@ -92,7 +93,8 @@ export function createPlayerScreenMethods35() {
         };
         const canUseEngineFs = WebOsEngineFsResolver.canResolveStream(streamCandidate);
         const canUseTizenP2p = TizenStreamingServerResolver.canResolveStream(streamCandidate);
-        const canResolveP2p = canUseEngineFs || canUseTizenP2p;
+        const canUseNuvioService = NuvioServiceStreamingResolver.canResolveStream(streamCandidate);
+        const canResolveP2p = canUseEngineFs || canUseTizenP2p || canUseNuvioService;
         const tizenP2pUnsupported = TizenStreamingServerResolver.isUnsupportedOnCurrentTizen(streamCandidate);
         const p2pEnabled = Boolean(TorrentSettingsStore.get().p2pEnabled);
         const canUseP2p = p2pEnabled && canResolveP2p;
@@ -160,6 +162,37 @@ export function createPlayerScreenMethods35() {
               }
               return;
             }
+          }
+        }
+
+        // NuvioService Streaming Resolver (for torrent streams via NuvioService streaming server)
+        if (!targetUrl && NuvioServiceStreamingResolver.canResolveStream(streamCandidate)) {
+          const result = await NuvioServiceStreamingResolver.resolve(streamCandidate, resolveContext);
+          if (!this.isActiveMountToken(mountToken)) {
+            return;
+          }
+          if (result.status === "success" && result.stream?.url) {
+            targetUrl = result.stream.url;
+            Object.assign(streamCandidate, {
+              url: targetUrl,
+              externalUrl: null,
+              infoHash: result.stream.infoHash || streamCandidate.infoHash,
+              fileIdx: result.stream.fileIdx ?? streamCandidate.fileIdx,
+              nuvioServiceStreaming: result.stream.nuvioServiceStreaming || null,
+              mimeType: result.stream.mimeType || streamCandidate.mimeType,
+              sourceType: result.stream.sourceType || streamCandidate.sourceType,
+              behaviorHints: result.stream.behaviorHints || streamCandidate.behaviorHints,
+              raw: { ...(streamCandidate.raw || {}), ...(result.stream.raw || {}) }
+            });
+          } else {
+            resolveFailureStatus = result?.status || "nuvio-service-failed";
+            resolveFailureDetail = result?.detail || result?.error || "";
+            console.warn("PlayerScreen: NuvioService streaming resolve failed", {
+              status: result.status,
+              detail: result.detail || "",
+              infoHash: streamCandidate.infoHash || streamCandidate.raw?.infoHash || streamCandidate.clientResolve?.infoHash || streamCandidate.raw?.clientResolve?.infoHash || "",
+              fileIdx: streamCandidate.fileIdx ?? streamCandidate.raw?.fileIdx ?? null
+            });
           }
         }
 

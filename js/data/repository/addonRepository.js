@@ -1,4 +1,5 @@
 import { MediaServerRepository } from "../mediaserver/mediaServerRepository.js";
+import { NuvioServiceRepository } from "../mediaserver/nuvioServiceRepository.js";
 import { safeApiCall } from "../../core/network/safeApiCall.js";
 import { LocalStore } from "../../core/storage/localStore.js";
 import { ProfileManager } from "../../core/profile/profileManager.js";
@@ -649,7 +650,7 @@ class AddonRepository {
   async getInstalledAddons(options = {}) {
     if (options.includeMediaServers) {
       const addons = await this.getInstalledAddons({ ...options, includeMediaServers: false });
-      return [...addons, ...MediaServerRepository.addons()];
+      return [...addons, ...MediaServerRepository.addons(), ...NuvioServiceRepository.addons()];
     }
     const includeDisabled = Boolean(options?.includeDisabled);
     const allUrls = this.getInstalledAddonUrls();

@@ -1,6 +1,7 @@
 import { canResolveMediaServerStream } from "../../../data/mediaserver/mediaServerRepository.js";
 import { loadPlayerShuffleWatched } from "./playerEpisodeShuffle.js";
 import { activeStreamLinkProfile } from "../../../data/local/streamLinkCacheStore.js";
+import { ScreenUtils } from "../../navigation/screen.js";
 /* global __NUVIO_APP_VERSION__ */
 import * as internals from "./playerScreenContext.js";
 import { initializePlayerMountState } from "./playerMountStateInitialization.js";
@@ -180,6 +181,16 @@ export function createPlayerScreenMethods01() {
         this.loadPartyProfile();
       }
       this.pauseOverlayMeta = this.buildPauseOverlayMeta();
+      
+      // Listen for media server changes to clear engine state when NuvioService is removed
+      this.mediaServerChangeHandler = () => {
+        if (this.currentEngineFsStream?.baseUrlKind === 'remote-service') {
+          console.log('[PlayerScreen] Media server changed, clearing NuvioService engine state');
+          this.currentEngineFsStream = null;
+        }
+      };
+      globalThis.document?.addEventListener?.('nuvio:media-servers-changed', this.mediaServerChangeHandler);
+      
       if (!this.isExternalFrameMode()) {
         this.bindVideoEvents();
         this.bindMediaSessionHandlers();
@@ -200,7 +211,7 @@ export function createPlayerScreenMethods01() {
       if (initialStreamUrl && !this.isExternalFrameMode()) {
         const sourceCandidate = this.getStreamCandidateByUrl(initialStreamUrl) || this.getCurrentStreamCandidate();
         this.activePlaybackUrl = initialStreamUrl;
-        this.currentEngineFsStream = this.getEngineFsStateForStream(sourceCandidate);
+        this.currentEngineFsStream = await this.getEngineFsStateForStream(sourceCandidate);
         const prioritizeWebOsRemoteMkvPlayback =
           Environment.isWebOS() && !this.currentEngineFsStream && this.isCurrentSourceLikelyMkv(initialStreamUrl, sourceCandidate);
         const allowNativePlaybackDuringStartupAudioGate = shouldAllowNativePlaybackDuringStartupAudioGate({

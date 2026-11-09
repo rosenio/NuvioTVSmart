@@ -1,4 +1,5 @@
 import { MediaServerRepository, parseServerItem } from "../mediaserver/mediaServerRepository.js";
+import { NuvioServiceRepository } from "../mediaserver/nuvioServiceRepository.js";
 import { safeApiCall } from "../../core/network/safeApiCall.js";
 import { addonRepository } from "./addonRepository.js";
 import { MetaApi } from "../remote/api/metaApi.js";
@@ -38,6 +39,17 @@ class MetaRepository {
           : { status: "error", message: "servers_failure_not_found" };
       } catch (_) {
         return { status: "error", message: "servers_failure_unreachable" };
+      }
+    }
+    if (String(addonBaseUrl || "").startsWith("nuvio-service://")) {
+      const connectionId = NuvioServiceRepository.parseBase(addonBaseUrl);
+      const connection = connectionId ? NuvioServiceRepository.connection(connectionId) : null;
+      if (!connection?.enabled) return { status: "error", message: "nuvio_service_unreachable" };
+      try {
+        const data = await NuvioServiceRepository.meta({ connection, type, id });
+        return data;
+      } catch (_) {
+        return { status: "error", message: "nuvio_service_unreachable" };
       }
     }
     const requestedType = String(type || "").trim();

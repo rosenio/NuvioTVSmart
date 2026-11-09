@@ -386,7 +386,9 @@ export function createPlayerScreenMethods36() {
       }
       try {
         const parsed = new URL(playbackUrl);
-        return `${parsed.origin}/${encodeURIComponent(infoHash)}/${String(fileIdx)}/stats.json`;
+        // Extract base path (e.g., "/stream" from "http://host:11470/stream/...")
+        const pathPrefix = parsed.pathname.split('/').slice(0, 2).join('/'); // "/stream"
+        return `${parsed.origin}${pathPrefix}/${encodeURIComponent(infoHash)}/${String(fileIdx)}/stats.json`;
       } catch (_) {
         return "";
       }

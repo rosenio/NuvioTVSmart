@@ -29,12 +29,30 @@ export function createSettingsScreenMethods02() {
       external = false,
       classes = "",
       disabled = false,
-      planned = false
+      planned = false,
+      status = ""
     }) {
       const inert = disabled || planned;
       const trailing = external ? "external" : icon;
+      let statusBadge = "";
+      if (status) {
+        const statusColors = {
+          online: "#00ff00",
+          offline: "#ff0000",
+          refreshing: "#888888"
+        };
+        const statusLabels = {
+          online: "ONLINE",
+          offline: "OFFLINE",
+          refreshing: "CHECKING..."
+        };
+        const color = statusColors[status] || statusColors.offline;
+        const label = statusLabels[status] || statusLabels.offline;
+        statusBadge = `<span class="settings-row-badge" style="color: ${color}; border-color: ${color}; background: transparent;">${escapeHtml(label)}</span>`;
+      }
       const tailContent = [
         planned ? `<span class="settings-row-badge">${escapeHtml(t("common.soon"))}</span>` : "",
+        statusBadge,
         value ? `<bdi class="settings-row-value" dir="${isContentRtl(String(value)) ? "rtl" : "ltr"}">${escapeHtml(value)}</bdi>` : "",
         trailing ? iconSvg(ROW_ICONS[trailing], `settings-row-icon${external ? " is-external" : ""}`) : ""
       ]

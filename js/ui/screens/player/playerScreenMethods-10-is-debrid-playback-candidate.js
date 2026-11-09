@@ -7,6 +7,7 @@ export function createPlayerScreenMethods10() {
     Environment,
     WebOsEngineFsResolver,
     TizenStreamingServerResolver,
+    NuvioServiceStreamingResolver,
     subscribeWebOsCompanionService,
     logEngineFsDebug,
     isLocalEngineFsUrl,
@@ -68,21 +69,29 @@ export function createPlayerScreenMethods10() {
       }
       return this.streamCandidates.find((entry) => String(entry?.url || "").trim() === normalized) || null;
     },
-    getEngineFsStateForStream(streamCandidate = null) {
+    async getEngineFsStateForStream(streamCandidate = null) {
+      console.log('[Player] getEngineFsStateForStream called:', { isTizen: Environment.isTizen(), isWebOS: Environment.isWebOS(), streamCandidateKeys: streamCandidate ? Object.keys(streamCandidate) : 'null' });
+      
       if (Environment.isWebOS()) {
         const state = WebOsEngineFsResolver.getResolvedStreamState(streamCandidate || {});
         if (state) {
+          console.log('[Player] getEngineFsStateForStream: WebOS resolver returned state');
           return state;
         }
       } else if (Environment.isTizen()) {
         const state = TizenStreamingServerResolver.getResolvedStreamState(streamCandidate || {});
         if (state) {
+          console.log('[Player] getEngineFsStateForStream: Tizen resolver returned state');
           return state;
         }
-      } else {
-        return null;
       }
-      const playbackUrl = String(streamCandidate?.url || streamCandidate?.externalUrl || streamCandidate || "").trim();
+      // Check for NuvioService streaming (works on both Tizen and WebOS)
+      const state = await NuvioServiceStreamingResolver.getResolvedStreamState(streamCandidate || {});
+      if (state) {
+        console.log('[Player] getEngineFsStateForStream: NuvioService returned state:', { kind: state.kind, infoHash: state.infoHash });
+        return state;
+      }
+      console.log('[Player] getEngineFsStateForStream: No engineFs state found, falling back to URL parsing');
       if (!playbackUrl) {
         return null;
       }
@@ -165,6 +174,10 @@ export function createPlayerScreenMethods10() {
             target.kind === "tizen-streaming-server"
               ? await TizenStreamingServerResolver.remove(target.infoHash, {
                   baseUrl: target.baseUrl,
+                  timeoutMs: 2500
+                })
+              : target.kind === "nuvio-service-streaming"
+              ? await NuvioServiceStreamingResolver.remove(target.infoHash, {
                   timeoutMs: 2500
                 })
               : await WebOsEngineFsResolver.remove(target.infoHash, { timeoutMs: 2500 });

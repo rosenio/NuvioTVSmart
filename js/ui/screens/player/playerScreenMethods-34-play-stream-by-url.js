@@ -94,7 +94,7 @@ export function createPlayerScreenMethods34() {
       if (sourceContext) {
         this.activePlaybackSourceContext = sourceContext;
       }
-      const nextEngineFsState = this.getEngineFsStateForStream(sourceCandidate);
+      const nextEngineFsState = await this.getEngineFsStateForStream(sourceCandidate);
       const prioritizeWebOsRemoteMkvPlayback =
         Environment.isWebOS() && !nextEngineFsState && this.isCurrentSourceLikelyMkv(streamUrl, sourceCandidate);
       const allowNativePlaybackDuringStartupAudioGate = shouldAllowNativePlaybackDuringStartupAudioGate({

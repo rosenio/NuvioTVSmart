@@ -146,6 +146,16 @@ export function createSettingsScreenMethods01() {
         void this.render({ refreshModel: true });
       });
 
+      // Listen for NuvioService connection changes to refresh the media servers list
+      const nuvioServiceChangedHandler = () => {
+        if (!this.isMounted || Router.getCurrent() !== "settings") return;
+        void this.render({ refreshModel: false, skipUnchangedContent: true });
+      };
+      globalThis.document?.addEventListener?.("nuvio:nuvio-service-changed", nuvioServiceChangedHandler);
+      this.nuvioServiceUnsubscribe = () => {
+        globalThis.document?.removeEventListener?.("nuvio:nuvio-service-changed", nuvioServiceChangedHandler);
+      };
+
       // Android renders the settings surface from local state immediately and
       // refreshes remote membership/profile data independently. Keep the same
       // ordering on Smart TV so a slow Supabase/avatar request cannot hold the
